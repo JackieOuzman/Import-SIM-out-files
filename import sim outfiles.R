@@ -3,6 +3,7 @@ library(tidyverse)
 library(dplyr)
 library(readr)
 library(stringr)
+library(lubridate)
 
 ### create a list of files
 ### create a list of headers
@@ -22,50 +23,120 @@ list_sim_out_file <-
     full.names = FALSE
   )
 
-test2 <- read_table(paste0(file_directory,"/",
-                           "SWeeds;InitialWater=InitialWater5 pdk output.out"),
+list_sim_out_file
+file_name <- list_sim_out_file[1]
+file_name
+
+## create a empty data frame
+#str(all_data)
+df_for_all_data <- data.frame(
+  year = character(),
+  Weed_emergedate = character(),
+  Weed_biomass    = character(),
+  Wheat_yield     = character(),
+  APSIM_Version   = character(),
+  Sim_name          = character(),
+  InitalWater       = character() #add more here
+)
+
+################################################################################
+###############################################################################
+##########               As a loop                                    ##########
+################################################################################
+
+
+
+for (list_sim_out_file in list_sim_out_file){
+
+
+df <- read_table(paste0(file_directory,"/",
+                        list_sim_out_file),
                     col_names = FALSE)
 
 
 
-View(SWeeds_InitialWater_InitialWater5_pdk_output)
+heading <- df[4,]
 
-  
-### split the file into 2 df
 
-heading_all <- test2[1:5,]
-APSIM_version <- heading_all[1,3]
-APSIM_version
-
-heading <- test2[4,]
-heading
-
-all_data <- test2[6:nrow(test2),] #subset the data from the 6 row to end of data frame
+all_data <- df[6:nrow(df),] #subset the data from the 6 row to end of data frame
 colnames(all_data)<- heading # add the column headings (ie row 4 from the original data)
 
+  
+### pull out the simulation infomation so I can create some new clms
+
+heading_all <- df[1:5,]
+APSIM_version1 <- heading_all[1,3]
+APSIM_version2 <- heading_all[1,4]
+APSIM_version <- paste0(APSIM_version1,"_", APSIM_version2)
+APSIM_version
+
+Sim_name <- heading_all[2,3]
+Sim_name <- Sim_name[[1,1]]
+str(Sim_name)
+
+InitialWater<-gsub("InitialWater=InitialWater","",as.character(Sim_name))
+InitialWater
+
+### This is where I would add 
+#class
+#date1
+#density
+#killdoe
+#Met
+#Soils
 
 
-### get some names into the file
+### get sim settings into the df
 all_data <- all_data %>% 
-  mutate(APSIM_Version =heading_all[1,3],
-         Sim_name = heading_all[2,3])
+  mutate(APSIM_Version =APSIM_version,
+         Sim_name = Sim_name,
+         InitalWater = InitialWater
+         #add more here if needed
+         )
 names(all_data)
-# all_data <- all_data %>%
-#   rename(APSIM_Version = APSIM_Version$X3,
-#          Sim_name = Sim_name$X3 )
+
+#name <- paste0("APSIM","_", 'output")
+#assign(name,all_data)
+
+df_for_all_data <- rbind(df_for_all_data, all_data)
 
 
-head(all_data)          
-head(heading_all)
 
-## next step split the sim name into clms
+# df_for_all_data$Weed_emergedate <- as.numeric(df_for_all_data$Weed_emergedate)
+# 
+# df_for_all_data$origin <- as.Date(paste0(df_for_all_data$year, "-01-01"),tz = "UTC") - days(1)
+# df_for_all_data <- df_for_all_data %>% 
+#   mutate(Weed_emergedate_date =  as.Date(df_for_all_data$Weed_emergedate , origin = df_for_all_data$origin, tz = "UTC"))
+# df_for_all_data <- df_for_all_data %>% 
+#   mutate(Weed_emergedate_date = case_when(
+#     Weed_emergedate > 0 ~ Weed_emergedate_date,
+#     TRUE ~ NA_real_
+#   ))
+# 
+# df_for_all_data <- df_for_all_data %>% 
+#   mutate(#Day = day(Weed_emergedate_date),
+#          Month = month(Weed_emergedate_date),
+#          DayMonth = format(as.Date(Weed_emergedate_date), "%d-%m"))
+# 
+# 
+# df_for_all_data <- df_for_all_data %>% 
+#   mutate(weed_sow_window = case_when(
+#     Month==12 ~ "Dec",
+#     Month==1 ~ "Jan",
+#     Month==2 ~ "Feb",
+#     Month==3 ~ "March",
+#     TRUE ~ "NA"
+#   ))
 
-all_data[1,6]
-
-all_data_test <- all_data %>%
-  separate(Sim_name, c("chuck", "InititalWater"), ",", remove = FALSE) %>% 
-  select(-chuck)
-all_data_test 
 
 
-all_data_test$Sim_name<-gsub("InitialWater=InitialWater","",as.character(all_data_test$Sim_name))
+
+}
+
+write.csv(df_for_all_data, paste0(file_directory, "/merge_sim_output.csv"), row.names = FALSE)
+
+
+
+
+
+

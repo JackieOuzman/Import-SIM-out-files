@@ -89,7 +89,8 @@ all_site_tidy_long <- all_site_tidy_long %>% rename(
   no3 = depth_no3,
   nh4 = depth_nh4)
 
-write.csv(all_site_tidy_long, paste0("X:/Summer_weeds/APSIM_7/starting_N_outputs/final_set/", site, "all_sites_starting_N_1998.csv"), row.names = FALSE)
+write.csv(all_site_tidy_long, "X:/Summer_weeds/APSIM_7/starting_N_outputs/final_set/all_sites_starting_N_1998.csv"
+          , row.names = FALSE)
 
 
 

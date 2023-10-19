@@ -472,36 +472,59 @@ str(df_all)
 df_all$Date <- dmy(df_all$Date)
 df_all$year <- format(as.Date(df_all$Date), format = "%Y")
 
+
+
+
+
+
+
+
+
 ################################################################################
-### site = KATANNING
+### site  ###########
 site <- "KATANNING"
 df_all <- df_all %>% mutate(site = site)
 ################################################################################
 #ensure soil N is getting bigger... or stable or something!
 
 
-no3_all <- ggplot(df_all, mapping = aes(year, no3_all))+
+ggplot(df_all, mapping = aes(year, no3_all))+
   geom_point()+
   facet_wrap(.~soil)+
   labs( title = site)+
   theme(axis.text.x = element_text(angle = 90)) 
 
+ggsave(
+  device = "png",
+  filename = paste0("no3_",   site,".png"),
+  path= "X:/Summer_weeds/APSIM_7/starting_N_outputs/plots/",
+  width=9.5,
+  height = 6.28,
+  dpi=600
+) 
 
-yield <- ggplot(df_all, mapping = aes(year, yield/1000))+
+ggplot(df_all, mapping = aes(year, yield/1000))+
   geom_point()+
   facet_wrap(.~soil)+
   labs( title = site)+
   theme(axis.text.x = element_text(angle = 90)) 
 
-yield
+ggsave(
+  device = "png",
+  filename = paste0("yield",   site,".png"),
+  path= "X:/Summer_weeds/APSIM_7/starting_N_outputs/plots/",
+  width=9.5,
+  height = 6.28,
+  dpi=600
+) 
 ### save the file
 
+write.csv(df_all, paste0("X:/Summer_weeds/APSIM_7/starting_N_outputs/all_year/", site, "starting_N_runs.csv"), row.names = FALSE)
 
 
-write.csv(df_for_all_data, paste0(file_directory, "/merged/merge_sim_output.csv"), row.names = FALSE)
+df_all_year_1998 <- df_all %>% filter(year == 1998)
 
 
-
-
+write.csv(df_all_year_1998, paste0("X:/Summer_weeds/APSIM_7/starting_N_outputs/final_set/", site, "starting_N_1998.csv"), row.names = FALSE)
 
 

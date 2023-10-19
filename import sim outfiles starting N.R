@@ -482,7 +482,7 @@ df_all$year <- format(as.Date(df_all$Date), format = "%Y")
 
 ################################################################################
 ### site  ###########
-site <- "KATANNING"
+site <- "CONDOBOLIN"
 df_all <- df_all %>% mutate(site = site)
 ################################################################################
 #ensure soil N is getting bigger... or stable or something!

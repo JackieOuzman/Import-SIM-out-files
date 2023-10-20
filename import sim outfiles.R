@@ -10,8 +10,9 @@ library(lubridate)
 ### put file name into df
 
 #################################################################################
-file_directory <- "X:/Summer_weeds/APSIM_7/Testing_v3_soil_water_reset/test_script_import"
-#file_directory <- "X:/Summer_weeds/APSIM_7/Factorial_generic_soil"
+site <- "Katanning"
+file_directory <- paste0("X:/Summer_weeds/APSIM_7/WA_sites/",site)
+
 
 
 ################################################################################
@@ -24,8 +25,8 @@ list_sim_out_file <-
   )
 
 list_sim_out_file
-file_name <- list_sim_out_file[2]
-file_name
+file_name_temp_list <- list_sim_out_file[c(1,2)]
+file_name <- list_sim_out_file[1]
 
 ## create a empty data frame
 #str(all_data)
@@ -34,12 +35,52 @@ df_for_all_data <- data.frame(
   Weed_emergedate = character(),
   Weed_biomass    = character(),
   Wheat_yield     = character(),
-  APSIM_Version   = character(),
-  Sim_name          = character(),
-  InitalWater       = character() #add more here
-)
+  sownNO3_60      = character(),
+  sowsw_1         = character(),
+  sowsw_2         = character(),
+  sowsw_3         = character(),
+  sowsw_4         = character(),
+  sowsw_5         = character(),
+  APSIM_Version     = as.character(),
+  factors           = as.character(),
+  title             = as.character(),
+  soil              = as.character(),
+  weed_type         = as.character(),
+  weed_sow_date     = as.character(),
+  weed_density      = as.character(),
+  weed_type         = as.character(),
+  weed_kill         = as.character(),
+  initial_water     = as.character()
+  )
 
-
+### set the heading names for the data you want to import
+### heading names for file 2,3,5
+heading <- c(
+  "year", 
+  "Weed_emergedate",
+  "Weed_biomass",
+  "Wheat_yield",
+  "sownNO3_60",
+  "sowsw_1",
+  "sowsw_2",
+  "sowsw_3",
+  "sowsw_4",
+  "sowsw_5"#,
+  # "APSIM_Version",
+  # "factors",
+  # "title",
+  # "soil",
+  # "weed_type",
+  # "weed_sow_date",
+  # 'weed_density' ,
+  # 'weed_kill' ,
+  # 'initial_water'
+  )
+  
+  
+  
+  
+  
 # df <- read_table(paste0(file_directory,"/",
 #                         file_name), col_names = FALSE)
 ################################################################################
@@ -49,59 +90,91 @@ df_for_all_data <- data.frame(
 
 
 
-for (list_sim_out_file in list_sim_out_file){
+for (file_name_temp_list in file_name_temp_list){
+
 
 
 df <- read_table(paste0(file_directory,"/",
-                        list_sim_out_file),
-                    col_names = FALSE)
+                        file_name_temp_list ), #change this back to list when your ready to run as loop (list_sim_out_file OR file_name
+                 col_names = FALSE, skip = 5)
 
 
+colnames(df)<- heading # add the column headings (as set above - before the loop)
 
-heading <- df[4,]
-
-
-all_data <- df[6:nrow(df),] #subset the data from the 6 row to end of data frame
-colnames(all_data)<- heading # add the column headings (ie row 4 from the original data)
-
-  
 ### pull out the simulation infomation so I can create some new clms
 
-heading_all <- df[1:5,]
-APSIM_version1 <- heading_all[1,3]
-APSIM_version2 <- heading_all[1,4]
-APSIM_version <- paste0(APSIM_version1,"_", APSIM_version2)
-APSIM_version
+version = read.csv(paste0(file_directory,"/",
+                          file_name_temp_list), skip = 0, header = F, nrows = 1, as.is = T)
 
-Sim_name <- heading_all[2,3]
-Sim_name <- Sim_name[[1,1]]
-str(Sim_name)
+factors = read.csv(paste0(file_directory,"/",
+                          file_name_temp_list), skip = 1, header = F, nrows = 1, as.is = T)
 
-InitialWater<-gsub("InitialWater=InitialWater","",as.character(Sim_name))
-InitialWater
+title_a = read.csv(paste0(file_directory,"/",
+                          file_name_temp_list), skip = 2, header = F, nrows = 1, as.is = T)
 
-### This is where I would add 
-#class
-#date1
-#density
-#killdoe
-#Met
-#Soils
 
+### formatting the above information
+APSIM_version <- version[1,1]
+APSIM_version<-gsub("ApsimVersion = ","",as.character(APSIM_version))
+
+factor = factors[1,1]
+factor<-gsub("factors = ","",as.character(factor))
+
+title = title_a[1,1]
+title<-gsub("Title = ","",as.character(title))
+
+
+
+
+### split the factors based on ;
+factor_split <- str_split_fixed(factors$V1, ';', 7)
+
+###weed_type
+weed_type <- factor_split[1]
+weed_type<-gsub("factors = class=","",
+                as.character(weed_type))
+
+###weed_date
+weed_date <- factor_split[2]
+weed_date<-gsub("date1=","",
+                as.character(weed_date))
+
+###weed_density
+weed_density <- factor_split[3]
+weed_density<-gsub("density=","",
+                   as.character(weed_density))
+
+###initial_water
+initial_water <- factor_split[4]
+initial_water<-gsub("InitialWater=IW","",
+                    as.character(initial_water))
+
+###weed_kill
+weed_kill <- factor_split[5]
+weed_kill<-gsub("killdoe=","",
+                as.character(weed_kill))
+
+###soil
+soil <- factor_split[7]
+soil<-gsub("Soils=","",
+           as.character(soil))
 
 ### get sim settings into the df
-all_data <- all_data %>% 
-  mutate(APSIM_Version =APSIM_version,
-         Sim_name = Sim_name,
-         InitalWater = InitialWater
-         #add more here if needed
+df <- df %>% 
+  mutate( APSIM_Version = APSIM_version,
+     factors = factor,
+     title = title,
+     soil = soil,
+     weed_type = weed_type ,
+     weed_sow_date = weed_date,
+     weed_density = weed_density,
+     weed_kill = weed_kill,
+     initial_water = initial_water
          )
-names(all_data)
+names(df)
 
-#name <- paste0("APSIM","_", 'output")
-#assign(name,all_data)
 
-df_for_all_data <- rbind(df_for_all_data, all_data)
+df_for_all_data <- rbind(df_for_all_data, df)
 
 
 

@@ -25,7 +25,7 @@ library(lubridate)
 ```
 
 
-## Import WA data
+
 
 ```{r import data for katanning, message=FALSE, warning=FALSE, include=FALSE}
 ## import data
@@ -35,40 +35,36 @@ names(df)
 
 ```
 
-# Subset the data 
+
 
 ## Katanning 
-soil = Pale Sand, ClayLoam, Clay, SandyDuplex
-Weed type  = summer_grass
-weed sow date = 01-Dec
-weed density = 12
-weed kill = 30
 
-### Other soil options  include:
-Loam	
-ClayLoam	
-Clay	
-SandyDuplex
 
-### Other weed type options  include:
-summer_grass
-*should be winter dicot (but I don't think it ran as factorial or imported data had a problem)*
+#### Soil options  include:
+* Loam	
+* ClayLoam	
+* Clay	
+* SandyDuplex
 
-### Other weed sow date options  include:
-01-Jan
-01-Feb
-01-Mar
-*(but I don't think it ran as factorial or imported data had a problem)*
+#### Weed type options  include:
+* summer_grass
+* winter_dicot
 
-### Other weed density options  include:
-1,2,7,10,12,15,20,30,50
 
-*(but I don't think it ran as factorial - I have 1,10,12)*
+#### Other weed sow date options  include:
+* 01-Dec
+* 01-Jan
+* 01-Feb
+* 01-Mar
 
-### Other weed kill options  include:
-10,15,20,25,30,40,50,60,200
 
-(but got all factorials)
+#### Other weed density options  include:
+* 1,2,7,10,12,15,20,30,50
+
+
+#### Other weed kill options  include:
+* 10,15,20,25,30,40,50,60,200
+
 
 ```{r subset katanning data, message=FALSE, warning=FALSE, include=FALSE}
 
@@ -106,7 +102,8 @@ ggplot( aes(x=as.factor(year), y = Weed_biomass, colour = as.factor(initial_wate
        x= "year", y = "weed biomass kg/ha",
        colour = "Initial water")+
   theme(
-    axis.text.x = element_text(angle = 90))
+    axis.text.x = element_text(angle = 90),
+            legend.position = "bottom")
  
 
 
@@ -119,7 +116,8 @@ Katanning_all_soil_subset %>%
        subtitle = "Weed type  = summer_grass, weed sow date = 01-Dec, weed density = 12, weed kill = 30",
        x= "year", y = "Yield biomass kg/ha",
        colour = "Initial water")+
-  theme(    axis.text.x = element_text(angle = 90))
+  theme(    axis.text.x = element_text(angle = 90),
+            legend.position = "bottom")
   
 
 

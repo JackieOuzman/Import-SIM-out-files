@@ -1,0 +1,126 @@
+---
+title: "Initial_Water"
+author: "Jackie"
+date: "2023-10-22"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+## WA sites
+
+
+
+```{r lib, message=FALSE, warning=FALSE, include=FALSE}
+
+#install.packages("tidyverse")
+library(tidyverse)
+#library(tidyr)
+library(dplyr)
+library(readr)
+library(stringr)
+library(lubridate)
+```
+
+
+## Import WA data
+
+```{r import data for katanning, message=FALSE, warning=FALSE, include=FALSE}
+## import data
+site <- "Katanning"
+df <- read.csv(paste0("X:/Summer_weeds/APSIM_7/WA_sites/output_csv/", site, ".csv"))
+names(df)
+
+```
+
+# Subset the data 
+
+## Katanning 
+soil = Pale Sand, ClayLoam, Clay, SandyDuplex
+Weed type  = summer_grass
+weed sow date = 01-Dec
+weed density = 12
+weed kill = 30
+
+### Other soil options  include:
+Loam	
+ClayLoam	
+Clay	
+SandyDuplex
+
+### Other weed type options  include:
+summer_grass
+*should be winter dicot (but I don't think it ran as factorial or imported data had a problem)*
+
+### Other weed sow date options  include:
+01-Jan
+01-Feb
+01-Mar
+*(but I don't think it ran as factorial or imported data had a problem)*
+
+### Other weed density options  include:
+1,2,7,10,12,15,20,30,50
+
+*(but I don't think it ran as factorial - I have 1,10,12)*
+
+### Other weed kill options  include:
+10,15,20,25,30,40,50,60,200
+
+(but got all factorials)
+
+```{r subset katanning data, message=FALSE, warning=FALSE, include=FALSE}
+
+Katanning_all_soil_subset <- df %>% 
+  filter(weed_type == "summer_grass") %>% 
+  filter(weed_sow_date == "01-Dec") %>% 
+  filter(weed_density == 10) %>% 
+  filter(weed_kill == 40) 
+  
+
+unique(Katanning_all_soil_subset$soil)
+unique(Katanning_all_soil_subset$weed_type)
+unique(Katanning_all_soil_subset$weed_sow_date)
+unique(Katanning_all_soil_subset$weed_density)
+unique(Katanning_all_soil_subset$weed_kill)
+unique(Katanning_all_soil_subset$initial_water)
+
+```
+
+
+
+# Plot
+
+```{r subset katanning data plots of Iitital water and yield, echo=FALSE, message=FALSE, warning=FALSE}
+
+Katanning_all_soil_subset$soil <- factor(Katanning_all_soil_subset$soil, levels = c("PaleSand", "Loam", "ClayLoam", "Clay", "Duplex"))
+
+Katanning_all_soil_subset %>% 
+ggplot( aes(x=as.factor(year), y = Weed_biomass, colour = as.factor(initial_water)))+
+  geom_point()+
+  facet_wrap(.~soil)+
+  theme_bw()+
+  labs(title = "Katanning",
+       subtitle = "Weed type  = summer_grass, weed sow date = 01-Dec, weed density = 12, weed kill = 30",
+       x= "year", y = "weed biomass kg/ha",
+       colour = "Initial water")+
+  theme(
+    axis.text.x = element_text(angle = 90))
+ 
+
+
+Katanning_all_soil_subset %>% 
+  ggplot( aes(x=as.factor(year), y = Wheat_yield, colour = as.factor(initial_water)))+
+  geom_point()+
+  facet_wrap(.~soil)+
+  theme_bw()+
+  labs(title = "Katanning",
+       subtitle = "Weed type  = summer_grass, weed sow date = 01-Dec, weed density = 12, weed kill = 30",
+       x= "year", y = "Yield biomass kg/ha",
+       colour = "Initial water")+
+  theme(    axis.text.x = element_text(angle = 90))
+  
+
+
+```

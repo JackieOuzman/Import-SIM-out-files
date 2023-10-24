@@ -25,7 +25,7 @@ list_sim_out_file <-
   )
 
 list_sim_out_file
-#file_name_temp_list <- list_sim_out_file[c(1,2)]
+list_sim_out_file <- list_sim_out_file[c(20001:28800)]
 #file_name <- list_sim_out_file[1]
 
 ## create a empty data frame
@@ -192,12 +192,24 @@ names(df)
 
 site <- "Katanning"
 
+### 3 parts
 
 
-write.csv(df_for_all_data, paste0("X:/Summer_weeds/APSIM_7/WA_sites/output_csv/", site, ".csv"), row.names = FALSE)
+## part 1 files on list 1-10,000
+#write.csv(df_for_all_data, paste0("X:/Summer_weeds/APSIM_7/WA_sites/output_csv/", site, "_part1.csv"), row.names = FALSE)
+#save(df_for_all_data, 
+#     file = paste0("X:/Summer_weeds/APSIM_7/WA_sites/output_csv/", site, "_part1",".RData")) 
+
+## part 2 files on list 10,001-20,000
+#write.csv(df_for_all_data, paste0("X:/Summer_weeds/APSIM_7/WA_sites/output_csv/", site, "_part2.csv"), row.names = FALSE)
+#save(df_for_all_data, 
+#     file = paste0("X:/Summer_weeds/APSIM_7/WA_sites/output_csv/", site, "_part2",".RData")) 
 
 
 
-
+## part 3 files on list 20,001-28,800
+write.csv(df_for_all_data, paste0("X:/Summer_weeds/APSIM_7/WA_sites/output_csv/", site, "_part3.csv"), row.names = FALSE)
+save(df_for_all_data, 
+     file = paste0("X:/Summer_weeds/APSIM_7/WA_sites/output_csv/", site, "_part3",".RData")) 
 
 

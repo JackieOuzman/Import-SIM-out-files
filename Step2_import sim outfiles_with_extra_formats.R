@@ -8,7 +8,7 @@ library(lubridate)
 #################################################################################
 ## import data
 site <- "Katanning"
-df <- read.csv(paste0("X:/Summer_weeds/APSIM_7/WA_sites/output_csv/", site, ".csv"))
+df <- read.csv(paste0("X:/Summer_weeds/APSIM_7/WA_sites/output_csv/", site, "_all.csv"))
 
 
 names(df)
@@ -63,7 +63,9 @@ names(df)
 write.csv(df, paste0("X:/Summer_weeds/APSIM_7/WA_sites/output_csv/", site, "extra_Clm_step2.csv"), row.names = FALSE)
 
 
-
-
-
-
+unique(df$soil)
+unique(df$weed_sow_date)
+unique(df$weed_density)
+unique(df$weed_kill)
+unique(df$initial_water)
+unique(df$weed_sow_window)

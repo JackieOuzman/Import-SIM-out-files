@@ -30,7 +30,7 @@ library(lubridate)
 ```{r import data for katanning, message=FALSE, warning=FALSE, include=FALSE}
 ## import data
 site <- "Katanning"
-df <- read.csv(paste0("X:/Summer_weeds/APSIM_7/WA_sites/output_csv/", site, ".csv"))
+df <- read.csv(paste0("X:/Summer_weeds/APSIM_7/WA_sites/output_csv/", site, "extra_Clm_step2.csv"))
 names(df)
 
 ```
@@ -122,3 +122,44 @@ Katanning_all_soil_subset %>%
 
 
 ```
+
+```{r subset katanning data 2 plots of Iitital water and yield, echo=FALSE, message=FALSE, warning=FALSE}
+
+Katanning_all_soil_subset <- df %>% 
+  filter(weed_type == "summer_grass") %>% 
+  filter(weed_sow_date == "01-Jan") %>% 
+  filter(weed_density == 10) %>% 
+  filter(weed_kill == 40) 
+
+Katanning_all_soil_subset$soil <- factor(Katanning_all_soil_subset$soil, levels = c("PaleSand", "Loam", "ClayLoam", "Clay", "Duplex"))
+
+Katanning_all_soil_subset %>% 
+ggplot( aes(x=as.factor(year), y = Weed_biomass, colour = as.factor(initial_water)))+
+  geom_point()+
+  facet_wrap(.~soil)+
+  theme_bw()+
+  labs(title = "Katanning",
+       subtitle = "Weed type  = summer_grass, weed sow date = 01-Jan, weed density = 12, weed kill = 30",
+       x= "year", y = "weed biomass kg/ha",
+       colour = "Initial water")+
+  theme(
+    axis.text.x = element_text(angle = 90),
+            legend.position = "bottom")
+ 
+
+
+Katanning_all_soil_subset %>% 
+  ggplot( aes(x=as.factor(year), y = Wheat_yield, colour = as.factor(initial_water)))+
+  geom_point()+
+  facet_wrap(.~soil)+
+  theme_bw()+
+  labs(title = "Katanning",
+       subtitle = "Weed type  = summer_grass, weed sow date = 01-Jan, weed density = 12, weed kill = 30",
+       x= "year", y = "Yield biomass kg/ha",
+       colour = "Initial water")+
+  theme(    axis.text.x = element_text(angle = 90),
+            legend.position = "bottom")
+  
+
+```
+  

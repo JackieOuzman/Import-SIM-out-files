@@ -12,9 +12,10 @@ library(lubridate)
 #################################################################################
 #site <- "Katanning"
 #site <- "Merredin"
-site <- "Meckering"
+#site <- "Meckering"
+site <- "Birchip"
 
-file_directory <- paste0("X:/Summer_weeds/APSIM_7/WA_sites/",site)
+file_directory <- paste0("X:/Summer_weeds/APSIM_7/VIC_sites/",site)
 
 file_directory
 
@@ -194,24 +195,12 @@ names(df)
 
 
 
-### 3 parts
-
-
-## part 1 files on list 1-10,000
-#write.csv(df_for_all_data, paste0("X:/Summer_weeds/APSIM_7/WA_sites/output_csv/", site, "_part1.csv"), row.names = FALSE)
-#save(df_for_all_data, 
-#     file = paste0("X:/Summer_weeds/APSIM_7/WA_sites/output_csv/", site, "_part1",".RData")) 
-
-## part 2 files on list 10,001-20,000
-#write.csv(df_for_all_data, paste0("X:/Summer_weeds/APSIM_7/WA_sites/output_csv/", site, "_part2.csv"), row.names = FALSE)
-#save(df_for_all_data, 
-#     file = paste0("X:/Summer_weeds/APSIM_7/WA_sites/output_csv/", site, "_part2",".RData")) 
 
 
 
 ## all files on list 1-14400
-write.csv(df_for_all_data, paste0("X:/Summer_weeds/APSIM_7/WA_sites/output_csv/", site, "_all.csv"), row.names = FALSE)
+write.csv(df_for_all_data, paste0("X:/Summer_weeds/APSIM_7/VIC_sites/output_csv/", site, "_all.csv"), row.names = FALSE)
 save(df_for_all_data, 
-     file = paste0("X:/Summer_weeds/APSIM_7/WA_sites/output_csv/", site, "_all",".RData")) 
+     file = paste0("X:/Summer_weeds/APSIM_7/VIC_sites/output_csv/", site, "_all",".RData")) 
 
 

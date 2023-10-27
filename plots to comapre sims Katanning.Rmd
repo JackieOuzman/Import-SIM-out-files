@@ -27,9 +27,9 @@ library(lubridate)
 
 
 
-```{r import data for Merredin, message=FALSE, warning=FALSE, include=FALSE}
+```{r import data for Katanning, message=FALSE, warning=FALSE, include=FALSE}
 ## import data
-site <- "Merredin"
+site <- "Katanning"
 df <- read.csv(paste0("X:/Summer_weeds/APSIM_7/WA_sites/output_csv/", site, "extra_Clm_step2.csv"))
 names(df)
 
@@ -76,21 +76,21 @@ c) Extract the month from the Weed sow date, which is the start of the sowing wi
 If the month the weed emerged = the month of the start of the sowing window, then assign the month of the sowing window.
 
 
-```{r subset Merredin data, message=FALSE, warning=FALSE, include=FALSE}
+```{r subset Katanning data, message=FALSE, warning=FALSE, include=FALSE}
 
-Merredin_all_soil_uncontrolled_weeds <- df %>% 
+Katanning_all_soil_uncontrolled_weeds <- df %>% 
   filter(weed_type == "summer_grass") %>% 
   filter(weed_sow_and_emergedate_month == "Feb") %>% 
   filter(weed_density == 10) %>% 
   filter(weed_kill == 200) 
   
 
-unique(Merredin_all_soil_uncontrolled_weeds$soil)
-unique(Merredin_all_soil_uncontrolled_weeds$weed_type)
-unique(Merredin_all_soil_uncontrolled_weeds$weed_sow_date)
-unique(Merredin_all_soil_uncontrolled_weeds$weed_density)
-unique(Merredin_all_soil_uncontrolled_weeds$weed_kill)
-unique(Merredin_all_soil_uncontrolled_weeds$initial_water)
+unique(Katanning_all_soil_uncontrolled_weeds$soil)
+unique(Katanning_all_soil_uncontrolled_weeds$weed_type)
+unique(Katanning_all_soil_uncontrolled_weeds$weed_sow_date)
+unique(Katanning_all_soil_uncontrolled_weeds$weed_density)
+unique(Katanning_all_soil_uncontrolled_weeds$weed_kill)
+unique(Katanning_all_soil_uncontrolled_weeds$initial_water)
 
 ```
 
@@ -98,18 +98,18 @@ unique(Merredin_all_soil_uncontrolled_weeds$initial_water)
 
 # Plot
 
-```{r subset Merredin data plots of Iitital water and yield, echo=FALSE, message=FALSE, warning=FALSE}
+```{r subset Katanning data plots of Iitital water and yield, echo=FALSE, message=FALSE, warning=FALSE}
 
-Merredin_all_soil_uncontrolled_weeds$soil <- factor(Merredin_all_soil_uncontrolled_weeds$soil, levels = c("PaleSand", "Loam", "ClayLoam", "Clay", "Duplex"))
+Katanning_all_soil_uncontrolled_weeds$soil <- factor(Katanning_all_soil_uncontrolled_weeds$soil, levels = c("PaleSand", "Loam", "ClayLoam", "Clay", "Duplex"))
 
 
 ### Biomass
-Merredin_all_soil_uncontrolled_weeds %>% 
+Katanning_all_soil_uncontrolled_weeds %>% 
 ggplot( aes(x=as.factor(year), y = Weed_biomass, colour = as.factor(initial_water)))+
   geom_point()+
   facet_wrap(.~soil)+
   theme_bw()+
-  labs(title = "Merredin uncontrolled weeds",
+  labs(title = "Katanning uncontrolled weeds",
        subtitle = "Weed type  = summer_grass, weed sow + emerged date = Feb, \nweed density = 12, weed kill = 200",
        x= "year", y = "weed biomass kg/ha",
        colour = "Initial water")+
@@ -121,7 +121,7 @@ ggplot( aes(x=as.factor(year), y = Weed_biomass, colour = as.factor(initial_wate
 
 ggsave(
        device = "png",
-       filename = "Merredin_uncontrolled_biomass.png",
+       filename = "Katanning_uncontrolled_biomass.png",
        path= "X:/Summer_weeds/APSIM_7/WA_sites/plots/",
        width=8.62,
        height = 6.28,
@@ -130,12 +130,12 @@ ggsave(
  
 
 ### Yield
-Merredin_all_soil_uncontrolled_weeds %>% 
+Katanning_all_soil_uncontrolled_weeds %>% 
   ggplot( aes(x=as.factor(year), y = Wheat_yield, colour = as.factor(initial_water)))+
   geom_point()+
   facet_wrap(.~soil)+
   theme_bw()+
-  labs(title = "Merredin uncontrolled weeds",
+  labs(title = "Katanning uncontrolled weeds",
        subtitle = "Weed type  = summer_grass, weed sow + emerged date = Feb, \nweed density = 12, weed kill = 200",
        x= "year", y = "Yield biomass kg/ha",
        colour = "Initial water")+
@@ -146,7 +146,7 @@ Merredin_all_soil_uncontrolled_weeds %>%
             )
 ggsave(
        device = "png",
-       filename = "Merredin_uncontrolled_yield.png",
+       filename = "Katanning_uncontrolled_yield.png",
        path= "X:/Summer_weeds/APSIM_7/WA_sites/plots/",
        width=8.62,
        height = 6.28,
@@ -154,12 +154,12 @@ ggsave(
 )
 
 ### SownNO3  
-Merredin_all_soil_uncontrolled_weeds %>% 
+Katanning_all_soil_uncontrolled_weeds %>% 
   ggplot( aes(x=as.factor(year), y = sownNO3_60, colour = as.factor(initial_water)))+
   geom_point()+
   facet_wrap(.~soil)+
   theme_bw()+
-  labs(title = "Merredin uncontrolled weeds",
+  labs(title = "Katanning uncontrolled weeds",
        subtitle = "Weed type  = summer_grass, weed sow + emerged date = Feb, \nweed density = 12, weed kill = 200",
        x= "year", y = "sownNO3_60",
        colour = "Initial water")+
@@ -171,7 +171,7 @@ Merredin_all_soil_uncontrolled_weeds %>%
 
 ggsave(
        device = "png",
-       filename = "Merredin_uncontrolled_sownNO3.png",
+       filename = "Katanning_uncontrolled_sownNO3.png",
        path= "X:/Summer_weeds/APSIM_7/WA_sites/plots/",
        width=8.62,
        height = 6.28,
@@ -180,9 +180,9 @@ ggsave(
 
 ```
 
-```{r subset Merredin data 2 plots of Iitital water and yield, echo=FALSE, message=FALSE, warning=FALSE}
+```{r subset Katanning data 2 plots of Iitital water and yield, echo=FALSE, message=FALSE, warning=FALSE}
 
-Merredin_all_soil_controlled_weeds <- df %>% 
+Katanning_all_soil_controlled_weeds <- df %>% 
   filter(weed_type == "summer_grass") %>% 
   filter(weed_sow_and_emergedate_month == "Feb") %>% 
   filter(weed_density == 10) %>% 
@@ -191,15 +191,15 @@ Merredin_all_soil_controlled_weeds <- df %>%
 
 
 
-Merredin_all_soil_controlled_weeds$soil <- factor(Merredin_all_soil_controlled_weeds$soil, levels = c("PaleSand", "Loam", "ClayLoam", "Clay", "Duplex"))
+Katanning_all_soil_controlled_weeds$soil <- factor(Katanning_all_soil_controlled_weeds$soil, levels = c("PaleSand", "Loam", "ClayLoam", "Clay", "Duplex"))
 
 # biomass
-Merredin_all_soil_controlled_weeds %>% 
+Katanning_all_soil_controlled_weeds %>% 
 ggplot( aes(x=as.factor(year), y = Weed_biomass, colour = as.factor(initial_water)))+
   geom_point()+
   facet_wrap(.~soil)+
   theme_bw()+
-  labs(title = "Merredin controlled weeds",
+  labs(title = "Katanning controlled weeds",
        subtitle = "Weed type  = summer_grass, weed sow + emerged date = Feb, \nweed density = 12, weed kill = 10",
        x= "year", y = "weed biomass kg/ha",
        colour = "Initial water")+
@@ -213,7 +213,7 @@ ggplot( aes(x=as.factor(year), y = Weed_biomass, colour = as.factor(initial_wate
     
  ggsave(
        device = "png",
-       filename = "Merredin_controlled_biomass.png",
+       filename = "Katanning_controlled_biomass.png",
        path= "X:/Summer_weeds/APSIM_7/WA_sites/plots/",
        width=8.62,
        height = 6.28,
@@ -221,7 +221,7 @@ ggplot( aes(x=as.factor(year), y = Weed_biomass, colour = as.factor(initial_wate
 )
 #yield
 
-Merredin_all_soil_controlled_weeds %>%
+Katanning_all_soil_controlled_weeds %>%
   ggplot(aes(
     x = as.factor(year),
     y = Wheat_yield,
@@ -231,7 +231,7 @@ Merredin_all_soil_controlled_weeds %>%
   facet_wrap(. ~ soil) +
   theme_bw() +
   labs(
-    title = "Merredin controlled weeds",
+    title = "Katanning controlled weeds",
     subtitle = "Weed type  = summer_grass, weed sow + emerged date = Feb, \nweed density = 12, weed kill = 10",
     x = "year",
     y = "Yield biomass kg/ha",
@@ -246,7 +246,7 @@ Merredin_all_soil_controlled_weeds %>%
 
 ggsave(
        device = "png",
-       filename = "Merredin_controlled_yield.png",
+       filename = "Katanning_controlled_yield.png",
        path= "X:/Summer_weeds/APSIM_7/WA_sites/plots/",
        width=8.62,
        height = 6.28,
@@ -254,7 +254,7 @@ ggsave(
 )
 #sownNO3_60
 
-Merredin_all_soil_controlled_weeds %>%
+Katanning_all_soil_controlled_weeds %>%
   ggplot(aes(
     x = as.factor(year),
     y = sownNO3_60,
@@ -264,7 +264,7 @@ Merredin_all_soil_controlled_weeds %>%
   facet_wrap(. ~ soil) +
   theme_bw() +
   labs(
-    title = "Merredin controlled weeds",
+    title = "Katanning controlled weeds",
     subtitle = "Weed type  = summer_grass, weed sow + emerged date = Feb, \nweed density = 12, weed kill = 10",
     x = "year",
     y = "sownNO3_60",
@@ -278,7 +278,7 @@ Merredin_all_soil_controlled_weeds %>%
   )
 ggsave(
        device = "png",
-       filename = "Merredin_controlled_sownNO3.png",
+       filename = "Katanning_controlled_sownNO3.png",
        path= "X:/Summer_weeds/APSIM_7/WA_sites/plots/",
        width=8.62,
        height = 6.28,

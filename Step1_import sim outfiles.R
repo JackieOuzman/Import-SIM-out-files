@@ -10,10 +10,13 @@ library(lubridate)
 ### put file name into df
 
 #################################################################################
-site <- "Katanning"
+#site <- "Katanning"
+#site <- "Merredin"
+site <- "Meckering"
+
 file_directory <- paste0("X:/Summer_weeds/APSIM_7/WA_sites/",site)
 
-
+file_directory
 
 ################################################################################
 list_sim_out_file <-
@@ -24,9 +27,9 @@ list_sim_out_file <-
     full.names = FALSE
   )
 
-list_sim_out_file
-list_sim_out_file <- list_sim_out_file[c(20001:28800)]
-#file_name <- list_sim_out_file[1]
+list_sim_out_file #14400
+#list_sim_out_file <- list_sim_out_file[c(1:3)]
+
 
 ## create a empty data frame
 #str(all_data)
@@ -81,8 +84,7 @@ heading <- c(
   
   
   
-# df <- read_table(paste0(file_directory,"/",
-#                         file_name), col_names = FALSE)
+
 ################################################################################
 ###############################################################################
 ##########               As a loop                                    ##########
@@ -127,7 +129,7 @@ title<-gsub("Title = ","",as.character(title))
 
 
 ### split the factors based on ;
-factor_split <- str_split_fixed(factors$V1, ';', 7)
+factor_split <- str_split_fixed(factors$V1, ';', 6)#change back to 6 for other sites not katanning
 
 ###weed_type
 weed_type <- factor_split[1]
@@ -155,7 +157,7 @@ weed_kill<-gsub("killdoe=","",
                 as.character(weed_kill))
 
 ###soil
-soil <- factor_split[7]
+soil <- factor_split[6] #change back to 6 for other sites not Katanning
 soil<-gsub("Soils=","",
            as.character(soil))
 
@@ -190,7 +192,7 @@ df_for_all_data <- rbind(df_for_all_data, df)
 ### select clms I want
 names(df)
 
-site <- "Katanning"
+
 
 ### 3 parts
 
@@ -207,9 +209,9 @@ site <- "Katanning"
 
 
 
-## part 3 files on list 20,001-28,800
-write.csv(df_for_all_data, paste0("X:/Summer_weeds/APSIM_7/WA_sites/output_csv/", site, "_part3.csv"), row.names = FALSE)
+## all files on list 1-14400
+write.csv(df_for_all_data, paste0("X:/Summer_weeds/APSIM_7/WA_sites/output_csv/", site, "_all.csv"), row.names = FALSE)
 save(df_for_all_data, 
-     file = paste0("X:/Summer_weeds/APSIM_7/WA_sites/output_csv/", site, "_part3",".RData")) 
+     file = paste0("X:/Summer_weeds/APSIM_7/WA_sites/output_csv/", site, "_all",".RData")) 
 
 

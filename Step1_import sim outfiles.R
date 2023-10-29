@@ -10,12 +10,12 @@ library(lubridate)
 ### put file name into df
 
 #################################################################################
-#site <- "Katanning"
-#site <- "Merredin"
-#site <- "Meckering"
-site <- "Birchip"
+#site <- "Katanning_reset_water_yes" #Katanning
+#site <- "Meckering_reset_water_yes" # "Meckering
+site <- "Merredin_reset_water_yes"#"Merredin"
+#site <- "Birchip"
 
-file_directory <- paste0("X:/Summer_weeds/APSIM_7/VIC_sites/",site)
+file_directory <- paste0("X:/Summer_weeds/APSIM_7/WA_sites/",site)
 
 file_directory
 
@@ -199,8 +199,8 @@ names(df)
 
 
 ## all files on list 1-14400
-write.csv(df_for_all_data, paste0("X:/Summer_weeds/APSIM_7/VIC_sites/output_csv/", site, "_all.csv"), row.names = FALSE)
+write.csv(df_for_all_data, paste0("X:/Summer_weeds/APSIM_7/WA_sites/output_csv/", site, "_all.csv"), row.names = FALSE)
 save(df_for_all_data, 
-     file = paste0("X:/Summer_weeds/APSIM_7/VIC_sites/output_csv/", site, "_all",".RData")) 
+     file = paste0("X:/Summer_weeds/APSIM_7/WA_sites/output_csv/", site, "_all",".RData")) 
 
 

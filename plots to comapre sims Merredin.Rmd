@@ -29,7 +29,7 @@ library(lubridate)
 
 ```{r import data for Merredin, message=FALSE, warning=FALSE, include=FALSE}
 ## import data
-site <- "Merredin"
+site <- "Merredin_reset_water_yes"
 df <- read.csv(paste0("X:/Summer_weeds/APSIM_7/WA_sites/output_csv/", site, "extra_Clm_step2.csv"))
 names(df)
 
@@ -116,7 +116,7 @@ ggplot( aes(x=as.factor(year), y = Weed_biomass, colour = as.factor(initial_wate
   theme(
     axis.text.x = element_text(angle = 90),
             legend.position = "bottom",
-    plot.background = element_rect(fill = "darkolivegreen1"),
+    #plot.background = element_rect(fill = "darkolivegreen1"),
     plot.title = element_text(color="black", size=14, face="bold"))
 
 ggsave(
@@ -141,7 +141,7 @@ Merredin_all_soil_uncontrolled_weeds %>%
        colour = "Initial water")+
   theme(    axis.text.x = element_text(angle = 90),
             legend.position = "bottom",
-            plot.background = element_rect(fill = "coral1"),
+            #plot.background = element_rect(fill = "coral1"),
             plot.title = element_text(color="black", size=14, face="bold")
             )
 ggsave(
@@ -165,7 +165,7 @@ Merredin_all_soil_uncontrolled_weeds %>%
        colour = "Initial water")+
   theme(    axis.text.x = element_text(angle = 90),
             legend.position = "bottom",
-            plot.background = element_rect(fill = "deepskyblue1"),
+            #plot.background = element_rect(fill = "deepskyblue1"),
             plot.title = element_text(color="black", size=14, face="bold")
             )
 
@@ -206,7 +206,7 @@ ggplot( aes(x=as.factor(year), y = Weed_biomass, colour = as.factor(initial_wate
   theme(
     axis.text.x = element_text(angle = 90),
     legend.position = "bottom",
-    plot.background = element_rect(fill = "darkolivegreen3", color = "black", linewidth = 3),
+    #plot.background = element_rect(fill = "darkolivegreen3", color = "black", linewidth = 3),
     plot.title = element_text(color="black", size=14, face="bold")
    
     )
@@ -240,7 +240,7 @@ Merredin_all_soil_controlled_weeds %>%
   theme(
     axis.text.x = element_text(angle = 90),
     legend.position = "bottom",
-    plot.background = element_rect(fill = "coral1", color = "black", linewidth = 3),
+    #plot.background = element_rect(fill = "coral1", color = "black", linewidth = 3),
     plot.title = element_text(color="black", size=14, face="bold")
       )
 
@@ -273,7 +273,7 @@ Merredin_all_soil_controlled_weeds %>%
   theme(
     axis.text.x = element_text(angle = 90),
     legend.position = "bottom",
-    plot.background = element_rect(fill = "deepskyblue1", color = "black", linewidth = 3),
+    #plot.background = element_rect(fill = "deepskyblue1", color = "black", linewidth = 3),
     plot.title = element_text(color="black", size=14, face="bold")
   )
 ggsave(

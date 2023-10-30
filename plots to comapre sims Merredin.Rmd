@@ -41,6 +41,7 @@ names(df)
 
 
 #### Soil options  include:
+* Palse sand
 * Loam	
 * ClayLoam	
 * Clay	

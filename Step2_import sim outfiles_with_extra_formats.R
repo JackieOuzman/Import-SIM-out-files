@@ -10,7 +10,7 @@ library(lubridate)
 #################################################################################
 #site <- "Katanning_reset_water_yes" #Katanning
 #site <- "Meckering_reset_water_yes" # "Meckering
-site <- "Merredin_reset_water_yes"#"Merredin"
+site <- "Merredin_reset_water_yes_extra20percN" #Merredin_reset_water_yes"#"Merredin"
 
 df <- read.csv(paste0("X:/Summer_weeds/APSIM_7/WA_sites/output_csv/", site, "_all.csv"))
 

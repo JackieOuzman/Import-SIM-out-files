@@ -1,0 +1,378 @@
+---
+title: "Starting Nitrogen"
+author: "Jackie"
+date: "2023-10-22"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+## WA - Merredin
+
+
+
+```{r lib, message=FALSE, warning=FALSE, include=FALSE}
+
+#install.packages("tidyverse")
+#install.packages("DT")
+library(tidyverse)
+#library(tidyr)
+library(dplyr)
+library(readr)
+library(stringr)
+library(lubridate)
+library(DT)
+```
+
+
+
+
+```{r import data for Merredin, message=FALSE, warning=FALSE, include=FALSE}
+## import data
+site <- "Merredin_reset_water_yes"
+df <- read.csv(paste0("X:/Summer_weeds/APSIM_7/WA_sites/output_csv/", site, "extra_Clm_step2.csv"))
+names(df)
+
+site_higherN <- "Merredin_reset_water_yes_extra20percN"
+df_higher_N <- read.csv(paste0("X:/Summer_weeds/APSIM_7/WA_sites/output_csv/", site_higherN, "extra_Clm_step2.csv"))
+names(df)
+
+df <- df %>% mutate(initial_N = "15Yrs_av")
+df_higher_N <- df_higher_N %>% mutate(initial_N = "15Yrs_av_plus20_perc")
+
+df <- rbind(df, df_higher_N)
+
+rm(df_higher_N)
+```
+
+
+
+ 
+
+
+#### Soil options  include:
+* Palse sand
+* Loam	
+* ClayLoam	
+* Clay	
+* SandyDuplex
+
+#### Weed type options  include:
+* summer grass
+* winter dicot
+
+
+#### Weed density options  include:
+* 1,2,7,10,12,15,20,30,50
+
+
+#### Weed kill options  include:
+* 10,15,20,25,30,40,50,60,200
+
+#### Weed sow date options  include:
+* 01-Dec
+* 01-Jan
+* 01-Feb
+* 01-Mar
+
+Note that these are the start of the weed sowing window - there is no end date.
+
+#### Capturing if a weed emerged in the same month as the start of the weed sowing window
+Is by using the "weed_sow_and_emergedate_month" column.
+
+a) Converted the APSIM output Weed_emergedate, which is a day of the year into a date (coding 0 to NA)
+b) Extract the month from the DATE the Weed emerged.
+c) Extract the month from the Weed sow date, which is the start of the sowing window.
+
+If the month the weed emerged = the month of the start of the sowing window, then assign the month of the sowing window.
+
+
+```{r subset Merredin data, echo=FALSE, message=FALSE, warning=FALSE}
+
+Merredin_all_soil_uncontrolled_weeds <- df %>% 
+  filter(weed_type == "summer_grass") %>% 
+  filter(weed_sow_and_emergedate_month == "Dec") %>% 
+  filter(weed_density == 10) %>% 
+  filter(weed_kill == 200) 
+  
+
+summary_uncontrolled_weeds <- 
+Merredin_all_soil_uncontrolled_weeds %>% group_by(initial_N) %>% 
+  summarise(average_biomass = mean(Weed_biomass, na.rm = TRUE),
+            average_yield = mean(Wheat_yield, na.rm = TRUE))
+
+summary_uncontrolled_weeds <- ungroup(summary_uncontrolled_weeds)
+summary_uncontrolled_weeds$average_biomass <- round(summary_uncontrolled_weeds$average_biomass, 0)
+summary_uncontrolled_weeds$average_yield <- round(summary_uncontrolled_weeds$average_yield, 0)
+
+
+datatable(
+  head(summary_uncontrolled_weeds),
+  caption = 'Merredin uncontrolled weeds. 
+  Weed type  = summer_grass, weed sow + emerged date = Dec, weed density = 10, weed kill = 200'
+)
+
+```
+
+
+
+# Plot
+
+```{r subset Merredin data plots of Iitital water and yield, echo=FALSE, message=FALSE, warning=FALSE}
+
+Merredin_all_soil_uncontrolled_weeds$soil <- factor(Merredin_all_soil_uncontrolled_weeds$soil, levels = c("PaleSand", "Loam", "ClayLoam", "Clay", "Duplex"))
+
+
+### Biomass
+Merredin_all_soil_uncontrolled_weeds %>% 
+  ggplot( aes(x=as.factor(initial_water), y = Weed_biomass, colour = as.factor(initial_N)))+
+  geom_point()+
+  facet_wrap(.~soil)+
+  theme_bw()+
+  labs(title = "Merredin uncontrolled weeds",
+       subtitle = "Weed type  = summer_grass, weed sow + emerged date = Dec, \nweed density = 10, weed kill = 200",
+       x= "inital water", y = "weed biomass kg/ha",
+       colour = "Initial N")+
+  theme(
+    axis.text.x = element_text(angle = 90),
+    legend.position = "bottom",
+    #plot.background = element_rect(fill = "darkolivegreen1"),
+    plot.title = element_text(color="black", size=14, face="bold"))
+
+ggsave(
+       device = "png",
+       filename = "Merredin_uncontrolled_biomass_dec_weeds.png",
+       path= "X:/Summer_weeds/APSIM_7/WA_sites/plots/",
+       width=8.62,
+       height = 6.28,
+       dpi=600
+)
+ 
+### Yield
+Merredin_all_soil_uncontrolled_weeds %>% 
+  ggplot( aes(x=as.factor(initial_water), y = Wheat_yield, colour = as.factor(initial_N)))+
+  geom_point()+
+  facet_wrap(.~soil)+
+  theme_bw()+
+  labs(title = "Merredin uncontrolled weeds",
+       subtitle = "Weed type  = summer_grass, weed sow + emerged date = Dec, \nweed density = 10, weed kill = 200",
+       x= "inital water", y = "Yield kg/ha",
+       colour = "Initial N")+
+  theme(
+    axis.text.x = element_text(angle = 90),
+    legend.position = "bottom",
+    #plot.background = element_rect(fill = "darkolivegreen1"),
+    plot.title = element_text(color="black", size=14, face="bold"))
+
+ggsave(
+       device = "png",
+       filename = "Merredin_uncontrolled_yield_dec_weeds.png",
+       path= "X:/Summer_weeds/APSIM_7/WA_sites/plots/",
+       width=8.62,
+       height = 6.28,
+       dpi=600
+)
+ 
+
+
+```
+
+
+```{r subset Merredin data controlled weeds, echo=FALSE, message=FALSE, warning=FALSE}
+
+Merredin_all_soil_controlled_weeds <- df %>% 
+  filter(weed_type == "summer_grass") %>% 
+  filter(weed_sow_and_emergedate_month == "Dec") %>% 
+  filter(weed_density == 10) %>% 
+  filter(weed_kill == 10) 
+  
+
+Merredin_all_soil_controlled_weeds_summary <- 
+Merredin_all_soil_controlled_weeds %>% group_by(initial_N) %>% 
+  summarise(average_biomass = mean(Weed_biomass, na.rm = TRUE),
+            average_yield = mean(Wheat_yield, na.rm = TRUE))
+
+Merredin_all_soil_controlled_weeds_summary <- ungroup(Merredin_all_soil_controlled_weeds_summary)
+Merredin_all_soil_controlled_weeds_summary$average_biomass <- round(Merredin_all_soil_controlled_weeds_summary$average_biomass, 0)
+Merredin_all_soil_controlled_weeds_summary$average_yield <- round(Merredin_all_soil_controlled_weeds_summary$average_yield, 0)
+
+
+datatable(
+  head(Merredin_all_soil_controlled_weeds_summary),
+  caption = 'Merredin controlled weeds. 
+  Weed type  = summer_grass, weed sow + emerged date = Dec, weed density = 12, weed kill = 10'
+)
+
+```
+
+
+```{r subset Merredin data 2 plots of Iitital water and yield, echo=FALSE, message=FALSE, warning=FALSE}
+
+
+
+
+
+Merredin_all_soil_controlled_weeds$soil <- factor(Merredin_all_soil_controlled_weeds$soil, levels = c("PaleSand", "Loam", "ClayLoam", "Clay", "Duplex"))
+
+### Biomass
+Merredin_all_soil_controlled_weeds %>% 
+  ggplot( aes(x=as.factor(initial_water), y = Weed_biomass, colour = as.factor(initial_N)))+
+  geom_point()+
+  facet_wrap(.~soil)+
+  theme_bw()+
+  labs(title = "Merredin controlled weeds",
+       subtitle = "Weed type  = summer_grass, weed sow + emerged date = Dec, \nweed density = 10, weed kill = 10",
+       x= "inital water", y = "weed biomass kg/ha",
+       colour = "Initial N")+
+  theme(
+    axis.text.x = element_text(angle = 90),
+    legend.position = "bottom",
+    #plot.background = element_rect(fill = "darkolivegreen1"),
+    plot.title = element_text(color="black", size=14, face="bold"))
+
+ggsave(
+       device = "png",
+       filename = "Merredin_controlled_biomass_dec_weeds.png",
+       path= "X:/Summer_weeds/APSIM_7/WA_sites/plots/",
+       width=8.62,
+       height = 6.28,
+       dpi=600
+)
+
+### Yield
+Merredin_all_soil_controlled_weeds %>% 
+  ggplot( aes(x=as.factor(initial_water), y = Wheat_yield, colour = as.factor(initial_N)))+
+  geom_point()+
+  facet_wrap(.~soil)+
+  theme_bw()+
+  labs(title = "Merredin controlled weeds",
+       subtitle = "Weed type  = summer_grass, weed sow + emerged date = Dec, \nweed density = 10, weed kill = 10",
+       x= "inital water", y = "yield kg/ha",
+       colour = "Initial N")+
+  theme(
+    axis.text.x = element_text(angle = 90),
+    legend.position = "bottom",
+    #plot.background = element_rect(fill = "darkolivegreen1"),
+    plot.title = element_text(color="black", size=14, face="bold"))
+
+ggsave(
+       device = "png",
+       filename = "Merredin_controlled_Yield_dec_weeds.png",
+       path= "X:/Summer_weeds/APSIM_7/WA_sites/plots/",
+       width=8.62,
+       height = 6.28,
+       dpi=600
+)
+
+
+```
+  
+  
+  
+  
+  
+  
+#################################################################################
+#### how many years did weeds germinate in DEC
+
+
+```{r subset Merredin data weeds emeregd, echo=FALSE, message=FALSE, warning=FALSE}
+
+site <- "Merredin_reset_water_yes"
+site_higherN <- "Merredin_reset_water_yes_extra20percN"
+
+step1_df <- read.csv(paste0("X:/Summer_weeds/APSIM_7/WA_sites/output_csv/", site, "_all.csv"))
+step1_higherN_df <- read.csv(paste0("X:/Summer_weeds/APSIM_7/WA_sites/output_csv/", site_higherN, "_all.csv"))
+
+
+step1_df <- step1_df %>% mutate(initial_N = "15Yrs_av")
+step1_higherN_df <- step1_higherN_df %>% mutate(initial_N = "15Yrs_av_plus20_perc")
+
+step1_df <- rbind(step1_df, step1_higherN_df)
+
+rm(step1_higherN_df)
+
+
+#################################################################################
+### add extra info on the day of emergence
+step1_df$Weed_emergedate <- as.numeric(step1_df$Weed_emergedate)
+
+step1_df$origin <- as.Date(paste0(step1_df$year, "-01-01"),tz = "UTC") - days(1)
+step1_df <- step1_df %>%
+  dplyr::mutate(Weed_emergedate_date =  as.Date(step1_df$Weed_emergedate , origin = step1_df$origin, tz = "UTC"))
+
+
+
+step1_df <- step1_df %>%
+  mutate(
+    Month_weed_emerg = month(Weed_emergedate_date),
+    DayMonth_weed_emerg = format(as.Date(Weed_emergedate_date), "%d-%m"))
+
+
+step1_df <- step1_df %>%
+  mutate(Month_weed_emergedate = case_when(
+    Month_weed_emerg==12 ~ "Dec",
+    Month_weed_emerg==1 ~ "Jan",
+    Month_weed_emerg==2 ~ "Feb",
+    Month_weed_emerg==3 ~ "Mar",
+    TRUE ~ as.character(NA_real_)
+  ))
+
+### tidy up
+step1_df <- step1_df %>% 
+  select(- origin,
+         -Month_weed_emerg,              
+         -DayMonth_weed_emerg )
+
+
+
+head(step1_df)
+
+step1_df <- step1_df %>%
+  mutate(
+    Month_start_weed_window = gsub("01-","",as.character(weed_sow_date)))
+
+
+
+#### if the start of the sowing window and the weed eme date has the same date then give it the sow window date
+str(step1_df)
+
+step1_df <- step1_df %>% 
+  mutate(weed_sow_and_emergedate_month = case_when(
+    Month_start_weed_window == Month_weed_emergedate ~ Month_start_weed_window,
+    TRUE ~ NA
+  ))
+
+str(step1_df)
+
+
+
+Merredin_all_soil_uncontrolled_weeds_DEC_GERM <- step1_df %>% 
+  filter(weed_type == "summer_grass") %>% 
+  #filter(weed_sow_and_emergedate_month == "Dec") %>% 
+  filter(weed_sow_date == "01-Dec") %>%
+  filter(weed_density == 10) %>% 
+  filter(weed_kill == 200) 
+
+count_no_weeds <- Merredin_all_soil_uncontrolled_weeds_DEC_GERM %>% 
+ filter(Weed_emergedate==0) %>% 
+   group_by(initial_N,initial_water, soil) %>% 
+  summarise(numb_yrs_no_weeeds =n())
+
+count_years <- Merredin_all_soil_uncontrolled_weeds_DEC_GERM %>% 
+  group_by(initial_N,initial_water, soil) %>% 
+  summarise(years =n())
+
+count_no_weeds_perc <- left_join(count_no_weeds, count_years)
+count_no_weeds_perc <- ungroup(count_no_weeds_perc)
+str(count_no_weeds_perc)
+
+###make it wide
+count_no_weeds_perc_wide <- count_no_weeds_perc %>% pivot_wider(names_from = initial_N,
+            values_from =  numb_yrs_no_weeeds)
+
+
+count_no_weeds_perc_wide
+```

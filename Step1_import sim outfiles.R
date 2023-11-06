@@ -15,7 +15,8 @@ library(lubridate)
 #site <- "Merredin_reset_water_yes" #Merredin_reset_water_yes_extra20percN"# Merredin_reset_water_yes   "Merredin"  
 #site <- "Katanning_top_up"
 #site <- "Meckering_top_up"
-site <- "Meckering_top_up"
+#site <- "Meckering_top_up"
+site <- "Merredin_top_up"
 
 file_directory <- paste0("X:/Summer_weeds/APSIM_7/WA_sites/",site)
 

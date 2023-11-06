@@ -14,7 +14,8 @@ library(lubridate)
 
 
 #site <- "Katanning_top_up"
-site <-"Meckering_top_up"
+#site <-"Meckering_top_up"
+site <-"Merredin_top_up"
 
 df <- read.csv(paste0("X:/Summer_weeds/APSIM_7/WA_sites/output_csv/", site, "_all.csv"))
 

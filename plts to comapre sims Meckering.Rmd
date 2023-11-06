@@ -27,9 +27,9 @@ library(lubridate)
 
 
 
-```{r import data for Merredin, message=FALSE, warning=FALSE, include=FALSE}
+```{r import data for Meckering, message=FALSE, warning=FALSE, include=FALSE}
 ## import data
-site <- "Merredin_top_up"
+site <- "Meckering_top_up"
 df <- read.csv(paste0("X:/Summer_weeds/APSIM_7/WA_sites/output_csv/", site, "extra_Clm_step2.csv"))
 names(df)
 
@@ -77,9 +77,9 @@ c) Extract the month from the Weed sow date, which is the start of the sowing wi
 If the month the weed emerged = the month of the start of the sowing window, then assign the month of the sowing window.
 
 
-```{r subset Merredin data, message=FALSE, warning=FALSE, include=FALSE}
+```{r subset Meckering data, message=FALSE, warning=FALSE, include=FALSE}
 
-Merredin_all_soil_uncontrolled_weeds <- df %>%
+Meckering_all_soil_uncontrolled_weeds <- df %>%
   filter(weed_type == "summer_grass") %>%
   # filter(weed_sow_and_emergedate_month == "Feb") %>%
   filter(
@@ -92,19 +92,19 @@ Merredin_all_soil_uncontrolled_weeds <- df %>%
   filter(weed_kill == 200) 
   
 
-unique(Merredin_all_soil_uncontrolled_weeds$soil)
-unique(Merredin_all_soil_uncontrolled_weeds$weed_type)
-unique(Merredin_all_soil_uncontrolled_weeds$weed_sow_date)
-unique(Merredin_all_soil_uncontrolled_weeds$weed_density)
-unique(Merredin_all_soil_uncontrolled_weeds$weed_kill)
-unique(Merredin_all_soil_uncontrolled_weeds$initial_water)
+unique(Meckering_all_soil_uncontrolled_weeds$soil)
+unique(Meckering_all_soil_uncontrolled_weeds$weed_type)
+unique(Meckering_all_soil_uncontrolled_weeds$weed_sow_date)
+unique(Meckering_all_soil_uncontrolled_weeds$weed_density)
+unique(Meckering_all_soil_uncontrolled_weeds$weed_kill)
+unique(Meckering_all_soil_uncontrolled_weeds$initial_water)
 
 ```
 
-```{r subset Merredin data summary, message=FALSE, warning=FALSE, include=FALSE}
+```{r subset Meckering data summary, message=FALSE, warning=FALSE, include=FALSE}
 
-Merredin_all_soil_uncontrolled_weeds_summary <-
-  Merredin_all_soil_uncontrolled_weeds %>%
+Meckering_all_soil_uncontrolled_weeds_summary <-
+  Meckering_all_soil_uncontrolled_weeds %>%
   group_by(soil, initial_water, weed_sow_and_emergedate_month) %>%
   summarise(
     Av_weed_biomass =  mean(Weed_biomass, na.rm = TRUE),
@@ -113,22 +113,22 @@ Merredin_all_soil_uncontrolled_weeds_summary <-
   )
 
 
-Merredin_all_soil_uncontrolled_weeds_summary <- ungroup(Merredin_all_soil_uncontrolled_weeds_summary)
+Meckering_all_soil_uncontrolled_weeds_summary <- ungroup(Meckering_all_soil_uncontrolled_weeds_summary)
 ```
 # Plot
 
-```{r subset Merredin data plots 1, echo=FALSE, message=FALSE, warning=FALSE}
+```{r subset Meckering data plots 1, echo=FALSE, message=FALSE, warning=FALSE}
 
-Merredin_all_soil_uncontrolled_weeds_summary$soil <- factor(Merredin_all_soil_uncontrolled_weeds_summary$soil, levels = c("PaleSand", "Loam", "ClayLoam", "Clay", "Duplex"))
+Meckering_all_soil_uncontrolled_weeds_summary$soil <- factor(Meckering_all_soil_uncontrolled_weeds_summary$soil, levels = c("PaleSand", "Loam", "ClayLoam", "Clay", "Duplex"))
 
 
 ### Biomass
-Merredin_all_soil_uncontrolled_weeds_summary %>% 
+Meckering_all_soil_uncontrolled_weeds_summary %>% 
 ggplot( aes(x=as.factor(initial_water), y = Av_weed_biomass, colour = as.factor(weed_sow_and_emergedate_month)))+
   geom_point()+
   facet_wrap(.~soil)+
   theme_bw()+
-  labs(title = "Merredin uncontrolled weeds",
+  labs(title = "Meckering uncontrolled weeds",
        subtitle = "Weed type  = summer_grass,  \nweed density = 12, weed kill = 200",
        x= "inital water", y = "weed biomass kg/ha",
        colour = "Weed window")+
@@ -139,7 +139,7 @@ ggplot( aes(x=as.factor(initial_water), y = Av_weed_biomass, colour = as.factor(
 
 ggsave(
        device = "png",
-       filename = "Merredin_uncontrolled_biomass_top_up.png",
+       filename = "Meckering_uncontrolled_biomass_top_up.png",
        path= "X:/Summer_weeds/APSIM_7/WA_sites/plots/",
        width=8.62,
        height = 6.28,
@@ -148,12 +148,12 @@ ggsave(
 
 
 ### Yield
-Merredin_all_soil_uncontrolled_weeds_summary %>% 
+Meckering_all_soil_uncontrolled_weeds_summary %>% 
 ggplot( aes(x=as.factor(initial_water), y = Av_weed_yield, colour = as.factor(weed_sow_and_emergedate_month)))+
   geom_point()+
   facet_wrap(.~soil)+
   theme_bw()+
-  labs(title = "Merredin uncontrolled weeds",
+  labs(title = "Meckering uncontrolled weeds",
        subtitle = "Weed type  = summer_grass,  \nweed density = 12, weed kill = 200",
        x= "inital water", y = "wheat yield kg/ha",
        colour = "Weed window")+
@@ -164,7 +164,7 @@ ggplot( aes(x=as.factor(initial_water), y = Av_weed_yield, colour = as.factor(we
 
 ggsave(
        device = "png",
-       filename = "Merredin_uncontrolled_yld_top_up.png",
+       filename = "Meckering_uncontrolled_yld_top_up.png",
        path= "X:/Summer_weeds/APSIM_7/WA_sites/plots/",
        width=8.62,
        height = 6.28,
@@ -173,12 +173,12 @@ ggsave(
 
 
 ### SownNO3  
-Merredin_all_soil_uncontrolled_weeds_summary %>% 
+Meckering_all_soil_uncontrolled_weeds_summary %>% 
 ggplot( aes(x=as.factor(initial_water), y = Av_NO3, colour = as.factor(weed_sow_and_emergedate_month)))+
   geom_point()+
   facet_wrap(.~soil)+
   theme_bw()+
-  labs(title = "Merredin uncontrolled weeds",
+  labs(title = "Meckering uncontrolled weeds",
        subtitle = "Weed type  = summer_grass,  \nweed density = 12, weed kill = 200",
        x= "inital water", y = "No3 top 60cm kg/ha",
        colour = "Weed window")+
@@ -189,7 +189,7 @@ ggplot( aes(x=as.factor(initial_water), y = Av_NO3, colour = as.factor(weed_sow_
 
 ggsave(
        device = "png",
-       filename = "Merredin_uncontrolled_No3_top_up.png",
+       filename = "Meckering_uncontrolled_No3_top_up.png",
        path= "X:/Summer_weeds/APSIM_7/WA_sites/plots/",
        width=8.62,
        height = 6.28,
@@ -200,10 +200,10 @@ ggsave(
 
 ```
 
-```{r subset Merredin data subset controlled2, echo=FALSE, message=FALSE, warning=FALSE}
+```{r subset Meckering data subset controlled2, echo=FALSE, message=FALSE, warning=FALSE}
 
 
-Merredin_all_soil_controlled_weeds <- df %>%
+Meckering_all_soil_controlled_weeds <- df %>%
   filter(weed_type == "summer_grass") %>%
   # filter(weed_sow_and_emergedate_month == "Feb") %>%
   filter(
@@ -221,10 +221,10 @@ Merredin_all_soil_controlled_weeds <- df %>%
 
 
 
-```{r subset Merredin data summary2, message=FALSE, warning=FALSE, include=FALSE}
+```{r subset Meckering data summary2, message=FALSE, warning=FALSE, include=FALSE}
 
-Merredin_all_soil_controlled_weeds_summary <-
-  Merredin_all_soil_controlled_weeds %>%
+Meckering_all_soil_controlled_weeds_summary <-
+  Meckering_all_soil_controlled_weeds %>%
   group_by(soil, initial_water, weed_sow_and_emergedate_month) %>%
   summarise(
     Av_weed_biomass =  mean(Weed_biomass, na.rm = TRUE),
@@ -233,22 +233,22 @@ Merredin_all_soil_controlled_weeds_summary <-
   )
 
 
-Merredin_all_soil_controlled_weeds_summary <- ungroup(Merredin_all_soil_controlled_weeds_summary)
+Meckering_all_soil_controlled_weeds_summary <- ungroup(Meckering_all_soil_controlled_weeds_summary)
 ```
 
 
-```{r subset Merredin data plots 2d, echo=FALSE, message=FALSE, warning=FALSE}
+```{r subset Meckering data plots 2d, echo=FALSE, message=FALSE, warning=FALSE}
 
-Merredin_all_soil_controlled_weeds_summary$soil <- factor(Merredin_all_soil_controlled_weeds_summary$soil, levels = c("PaleSand", "Loam", "ClayLoam", "Clay", "Duplex"))
+Meckering_all_soil_controlled_weeds_summary$soil <- factor(Meckering_all_soil_controlled_weeds_summary$soil, levels = c("PaleSand", "Loam", "ClayLoam", "Clay", "Duplex"))
 
 
 ### Biomass
-Merredin_all_soil_controlled_weeds_summary %>% 
+Meckering_all_soil_controlled_weeds_summary %>% 
 ggplot( aes(x=as.factor(initial_water), y = Av_weed_biomass, colour = as.factor(weed_sow_and_emergedate_month)))+
   geom_point()+
   facet_wrap(.~soil)+
   theme_bw()+
-  labs(title = "Merredin controlled weeds",
+  labs(title = "Meckering controlled weeds",
        subtitle = "Weed type  = summer_grass,  \nweed density = 12, weed kill = 200",
        x= "inital water", y = "weed biomass kg/ha",
        colour = "Weed window")+
@@ -259,7 +259,7 @@ ggplot( aes(x=as.factor(initial_water), y = Av_weed_biomass, colour = as.factor(
 
 ggsave(
        device = "png",
-       filename = "Merredin_controlled_biomass_top_up.png",
+       filename = "Meckering_controlled_biomass_top_up.png",
        path= "X:/Summer_weeds/APSIM_7/WA_sites/plots/",
        width=8.62,
        height = 6.28,
@@ -268,12 +268,12 @@ ggsave(
 
 
 ### Yield
-Merredin_all_soil_controlled_weeds_summary %>% 
+Meckering_all_soil_controlled_weeds_summary %>% 
 ggplot( aes(x=as.factor(initial_water), y = Av_weed_yield, colour = as.factor(weed_sow_and_emergedate_month)))+
   geom_point()+
   facet_wrap(.~soil)+
   theme_bw()+
-  labs(title = "Merredin controlled weeds",
+  labs(title = "Meckering controlled weeds",
        subtitle = "Weed type  = summer_grass,  \nweed density = 12, weed kill = 200",
        x= "inital water", y = "wheat yield kg/ha",
        colour = "Weed window")+
@@ -284,7 +284,7 @@ ggplot( aes(x=as.factor(initial_water), y = Av_weed_yield, colour = as.factor(we
 
 ggsave(
        device = "png",
-       filename = "Merredin_controlled_yld_top_up.png",
+       filename = "Meckering_controlled_yld_top_up.png",
        path= "X:/Summer_weeds/APSIM_7/WA_sites/plots/",
        width=8.62,
        height = 6.28,
@@ -293,12 +293,12 @@ ggsave(
 
 
 ### SownNO3  
-Merredin_all_soil_controlled_weeds_summary %>% 
+Meckering_all_soil_controlled_weeds_summary %>% 
 ggplot( aes(x=as.factor(initial_water), y = Av_NO3, colour = as.factor(weed_sow_and_emergedate_month)))+
   geom_point()+
   facet_wrap(.~soil)+
   theme_bw()+
-  labs(title = "Merredin controlled weeds",
+  labs(title = "Meckering controlled weeds",
        subtitle = "Weed type  = summer_grass,  \nweed density = 12, weed kill = 200",
        x= "inital water", y = "No3 top 60cm kg/ha",
        colour = "Weed window")+
@@ -309,7 +309,7 @@ ggplot( aes(x=as.factor(initial_water), y = Av_NO3, colour = as.factor(weed_sow_
 
 ggsave(
        device = "png",
-       filename = "Merredin_controlled_No3_top_up.png",
+       filename = "Meckering_controlled_No3_top_up.png",
        path= "X:/Summer_weeds/APSIM_7/WA_sites/plots/",
        width=8.62,
        height = 6.28,

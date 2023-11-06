@@ -29,7 +29,7 @@ library(lubridate)
 
 ```{r import data for Katanning, message=FALSE, warning=FALSE, include=FALSE}
 ## import data
-site <- "Katanning_reset_water_yes"
+site <- "Katanning_top_up"
 df <- read.csv(paste0("X:/Summer_weeds/APSIM_7/WA_sites/output_csv/", site, "extra_Clm_step2.csv"))
 names(df)
 
@@ -41,6 +41,7 @@ names(df)
 
 
 #### Soil options  include:
+* Pale Sand
 * Loam	
 * ClayLoam	
 * Clay	
@@ -78,10 +79,16 @@ If the month the weed emerged = the month of the start of the sowing window, the
 
 ```{r subset Katanning data, message=FALSE, warning=FALSE, include=FALSE}
 
-Katanning_all_soil_uncontrolled_weeds <- df %>% 
-  filter(weed_type == "summer_grass") %>% 
-  filter(weed_sow_and_emergedate_month == "Feb") %>% 
-  filter(weed_density == 10) %>% 
+Katanning_all_soil_uncontrolled_weeds <- df %>%
+  filter(weed_type == "summer_grass") %>%
+  # filter(weed_sow_and_emergedate_month == "Feb") %>%
+  filter(
+    weed_sow_and_emergedate_month == "Dec" |
+      weed_sow_and_emergedate_month == "Jan" |
+      weed_sow_and_emergedate_month == "Feb" |
+      weed_sow_and_emergedate_month == "Mar" 
+  ) %>%
+  filter(weed_density == 10) %>%
   filter(weed_kill == 200) 
   
 
@@ -94,195 +101,222 @@ unique(Katanning_all_soil_uncontrolled_weeds$initial_water)
 
 ```
 
+```{r subset Katanning data summary, message=FALSE, warning=FALSE, include=FALSE}
+
+Katanning_all_soil_uncontrolled_weeds_summary <-
+  Katanning_all_soil_uncontrolled_weeds %>%
+  group_by(soil, initial_water, weed_sow_and_emergedate_month) %>%
+  summarise(
+    Av_weed_biomass =  mean(Weed_biomass, na.rm = TRUE),
+    Av_weed_yield =    mean(Wheat_yield, na.rm = TRUE),
+    Av_NO3 =           mean(sownNO3_60, na.rm = TRUE)
+  )
 
 
+Katanning_all_soil_uncontrolled_weeds_summary <- ungroup(Katanning_all_soil_uncontrolled_weeds_summary)
+```
 # Plot
 
-```{r subset Katanning data plots of Iitital water and yield, echo=FALSE, message=FALSE, warning=FALSE}
+```{r subset Katanning data plots 1, echo=FALSE, message=FALSE, warning=FALSE}
 
-Katanning_all_soil_uncontrolled_weeds$soil <- factor(Katanning_all_soil_uncontrolled_weeds$soil, levels = c("PaleSand", "Loam", "ClayLoam", "Clay", "Duplex"))
+Katanning_all_soil_uncontrolled_weeds_summary$soil <- factor(Katanning_all_soil_uncontrolled_weeds_summary$soil, levels = c("PaleSand", "Loam", "ClayLoam", "Clay", "Duplex"))
 
 
 ### Biomass
-Katanning_all_soil_uncontrolled_weeds %>% 
-ggplot( aes(x=as.factor(year), y = Weed_biomass, colour = as.factor(initial_water)))+
+Katanning_all_soil_uncontrolled_weeds_summary %>% 
+ggplot( aes(x=as.factor(initial_water), y = Av_weed_biomass, colour = as.factor(weed_sow_and_emergedate_month)))+
   geom_point()+
   facet_wrap(.~soil)+
   theme_bw()+
   labs(title = "Katanning uncontrolled weeds",
-       subtitle = "Weed type  = summer_grass, weed sow + emerged date = Feb, \nweed density = 12, weed kill = 200",
-       x= "year", y = "weed biomass kg/ha",
-       colour = "Initial water")+
+       subtitle = "Weed type  = summer_grass,  \nweed density = 12, weed kill = 200",
+       x= "inital water", y = "weed biomass kg/ha",
+       colour = "Weed window")+
   theme(
     axis.text.x = element_text(angle = 90),
             legend.position = "bottom",
-    #plot.background = element_rect(fill = "darkolivegreen1"),
     plot.title = element_text(color="black", size=14, face="bold"))
 
 ggsave(
        device = "png",
-       filename = "Katanning_uncontrolled_biomass.png",
+       filename = "Katanning_uncontrolled_biomass_top_up.png",
        path= "X:/Summer_weeds/APSIM_7/WA_sites/plots/",
        width=8.62,
        height = 6.28,
        dpi=600
 )
- 
+
 
 ### Yield
-Katanning_all_soil_uncontrolled_weeds %>% 
-  ggplot( aes(x=as.factor(year), y = Wheat_yield, colour = as.factor(initial_water)))+
+Katanning_all_soil_uncontrolled_weeds_summary %>% 
+ggplot( aes(x=as.factor(initial_water), y = Av_weed_yield, colour = as.factor(weed_sow_and_emergedate_month)))+
   geom_point()+
   facet_wrap(.~soil)+
   theme_bw()+
   labs(title = "Katanning uncontrolled weeds",
-       subtitle = "Weed type  = summer_grass, weed sow + emerged date = Feb, \nweed density = 12, weed kill = 200",
-       x= "year", y = "Yield biomass kg/ha",
-       colour = "Initial water")+
-  theme(    axis.text.x = element_text(angle = 90),
+       subtitle = "Weed type  = summer_grass,  \nweed density = 12, weed kill = 200",
+       x= "inital water", y = "wheat yield kg/ha",
+       colour = "Weed window")+
+  theme(
+    axis.text.x = element_text(angle = 90),
             legend.position = "bottom",
-           # plot.background = element_rect(fill = "coral1"),
-            plot.title = element_text(color="black", size=14, face="bold")
-            )
+    plot.title = element_text(color="black", size=14, face="bold"))
+
 ggsave(
        device = "png",
-       filename = "Katanning_uncontrolled_yield.png",
+       filename = "Katanning_uncontrolled_yld_top_up.png",
        path= "X:/Summer_weeds/APSIM_7/WA_sites/plots/",
        width=8.62,
        height = 6.28,
        dpi=600
 )
+
 
 ### SownNO3  
-Katanning_all_soil_uncontrolled_weeds %>% 
-  ggplot( aes(x=as.factor(year), y = sownNO3_60, colour = as.factor(initial_water)))+
+Katanning_all_soil_uncontrolled_weeds_summary %>% 
+ggplot( aes(x=as.factor(initial_water), y = Av_NO3, colour = as.factor(weed_sow_and_emergedate_month)))+
   geom_point()+
   facet_wrap(.~soil)+
   theme_bw()+
   labs(title = "Katanning uncontrolled weeds",
-       subtitle = "Weed type  = summer_grass, weed sow + emerged date = Feb, \nweed density = 12, weed kill = 200",
-       x= "year", y = "sownNO3_60",
-       colour = "Initial water")+
-  theme(    axis.text.x = element_text(angle = 90),
+       subtitle = "Weed type  = summer_grass,  \nweed density = 12, weed kill = 200",
+       x= "inital water", y = "No3 top 60cm kg/ha",
+       colour = "Weed window")+
+  theme(
+    axis.text.x = element_text(angle = 90),
             legend.position = "bottom",
-            #plot.background = element_rect(fill = "deepskyblue1"),
-            plot.title = element_text(color="black", size=14, face="bold")
-            )
+    plot.title = element_text(color="black", size=14, face="bold"))
 
 ggsave(
        device = "png",
-       filename = "Katanning_uncontrolled_sownNO3.png",
+       filename = "Katanning_uncontrolled_No3_top_up.png",
        path= "X:/Summer_weeds/APSIM_7/WA_sites/plots/",
        width=8.62,
        height = 6.28,
        dpi=600
 )
+
+
 
 ```
 
-```{r subset Katanning data 2 plots of Iitital water and yield, echo=FALSE, message=FALSE, warning=FALSE}
+```{r subset Katanning data subset controlled2, echo=FALSE, message=FALSE, warning=FALSE}
 
-Katanning_all_soil_controlled_weeds <- df %>% 
-  filter(weed_type == "summer_grass") %>% 
-  filter(weed_sow_and_emergedate_month == "Feb") %>% 
-  filter(weed_density == 10) %>% 
+
+Katanning_all_soil_controlled_weeds <- df %>%
+  filter(weed_type == "summer_grass") %>%
+  # filter(weed_sow_and_emergedate_month == "Feb") %>%
+  filter(
+    weed_sow_and_emergedate_month == "Dec" |
+      weed_sow_and_emergedate_month == "Jan" |
+      weed_sow_and_emergedate_month == "Feb" |
+      weed_sow_and_emergedate_month == "Mar" 
+  ) %>%
+  filter(weed_density == 10) %>%
   filter(weed_kill == 10) 
+
+
   
+```
 
 
 
-Katanning_all_soil_controlled_weeds$soil <- factor(Katanning_all_soil_controlled_weeds$soil, levels = c("PaleSand", "Loam", "ClayLoam", "Clay", "Duplex"))
+```{r subset Katanning data summary2, message=FALSE, warning=FALSE, include=FALSE}
 
-# biomass
-Katanning_all_soil_controlled_weeds %>% 
-ggplot( aes(x=as.factor(year), y = Weed_biomass, colour = as.factor(initial_water)))+
+Katanning_all_soil_controlled_weeds_summary <-
+  Katanning_all_soil_controlled_weeds %>%
+  group_by(soil, initial_water, weed_sow_and_emergedate_month) %>%
+  summarise(
+    Av_weed_biomass =  mean(Weed_biomass, na.rm = TRUE),
+    Av_weed_yield =    mean(Wheat_yield, na.rm = TRUE),
+    Av_NO3 =           mean(sownNO3_60, na.rm = TRUE)
+  )
+
+
+Katanning_all_soil_controlled_weeds_summary <- ungroup(Katanning_all_soil_controlled_weeds_summary)
+```
+
+
+```{r subset Katanning data plots 2d, echo=FALSE, message=FALSE, warning=FALSE}
+
+Katanning_all_soil_controlled_weeds_summary$soil <- factor(Katanning_all_soil_controlled_weeds_summary$soil, levels = c("PaleSand", "Loam", "ClayLoam", "Clay", "Duplex"))
+
+
+### Biomass
+Katanning_all_soil_controlled_weeds_summary %>% 
+ggplot( aes(x=as.factor(initial_water), y = Av_weed_biomass, colour = as.factor(weed_sow_and_emergedate_month)))+
   geom_point()+
   facet_wrap(.~soil)+
   theme_bw()+
   labs(title = "Katanning controlled weeds",
-       subtitle = "Weed type  = summer_grass, weed sow + emerged date = Feb, \nweed density = 12, weed kill = 10",
-       x= "year", y = "weed biomass kg/ha",
-       colour = "Initial water")+
+       subtitle = "Weed type  = summer_grass,  \nweed density = 12, weed kill = 200",
+       x= "inital water", y = "weed biomass kg/ha",
+       colour = "Weed window")+
   theme(
     axis.text.x = element_text(angle = 90),
-    legend.position = "bottom",
-    #plot.background = element_rect(fill = "darkolivegreen3", color = "black", linewidth = 3),
-    plot.title = element_text(color="black", size=14, face="bold")
-   
-    )
-    
- ggsave(
-       device = "png",
-       filename = "Katanning_controlled_biomass.png",
-       path= "X:/Summer_weeds/APSIM_7/WA_sites/plots/",
-       width=8.62,
-       height = 6.28,
-       dpi=600
-)
-#yield
-
-Katanning_all_soil_controlled_weeds %>%
-  ggplot(aes(
-    x = as.factor(year),
-    y = Wheat_yield,
-    colour = as.factor(initial_water)
-  )) +
-  geom_point() +
-  facet_wrap(. ~ soil) +
-  theme_bw() +
-  labs(
-    title = "Katanning controlled weeds",
-    subtitle = "Weed type  = summer_grass, weed sow + emerged date = Feb, \nweed density = 12, weed kill = 10",
-    x = "year",
-    y = "Yield biomass kg/ha",
-    colour = "Initial water"
-  ) +
-  theme(
-    axis.text.x = element_text(angle = 90),
-    legend.position = "bottom",
-    #plot.background = element_rect(fill = "coral1", color = "black", linewidth = 3),
-    plot.title = element_text(color="black", size=14, face="bold")
-      )
+            legend.position = "bottom",
+    plot.title = element_text(color="black", size=14, face="bold"))
 
 ggsave(
        device = "png",
-       filename = "Katanning_controlled_yield.png",
+       filename = "Katanning_controlled_biomass_top_up.png",
        path= "X:/Summer_weeds/APSIM_7/WA_sites/plots/",
        width=8.62,
        height = 6.28,
        dpi=600
 )
-#sownNO3_60
 
-Katanning_all_soil_controlled_weeds %>%
-  ggplot(aes(
-    x = as.factor(year),
-    y = sownNO3_60,
-    colour = as.factor(initial_water)
-  )) +
-  geom_point() +
-  facet_wrap(. ~ soil) +
-  theme_bw() +
-  labs(
-    title = "Katanning controlled weeds",
-    subtitle = "Weed type  = summer_grass, weed sow + emerged date = Feb, \nweed density = 12, weed kill = 10",
-    x = "year",
-    y = "sownNO3_60",
-    colour = "Initial water"
-  ) +
+
+### Yield
+Katanning_all_soil_controlled_weeds_summary %>% 
+ggplot( aes(x=as.factor(initial_water), y = Av_weed_yield, colour = as.factor(weed_sow_and_emergedate_month)))+
+  geom_point()+
+  facet_wrap(.~soil)+
+  theme_bw()+
+  labs(title = "Katanning controlled weeds",
+       subtitle = "Weed type  = summer_grass,  \nweed density = 12, weed kill = 200",
+       x= "inital water", y = "wheat yield kg/ha",
+       colour = "Weed window")+
   theme(
     axis.text.x = element_text(angle = 90),
-    legend.position = "bottom",
-    #plot.background = element_rect(fill = "deepskyblue1", color = "black", linewidth = 3),
-    plot.title = element_text(color="black", size=14, face="bold")
-  )
+            legend.position = "bottom",
+    plot.title = element_text(color="black", size=14, face="bold"))
+
 ggsave(
        device = "png",
-       filename = "Katanning_controlled_sownNO3.png",
+       filename = "Katanning_controlled_yld_top_up.png",
        path= "X:/Summer_weeds/APSIM_7/WA_sites/plots/",
        width=8.62,
        height = 6.28,
        dpi=600
 )
+
+
+### SownNO3  
+Katanning_all_soil_controlled_weeds_summary %>% 
+ggplot( aes(x=as.factor(initial_water), y = Av_NO3, colour = as.factor(weed_sow_and_emergedate_month)))+
+  geom_point()+
+  facet_wrap(.~soil)+
+  theme_bw()+
+  labs(title = "Katanning controlled weeds",
+       subtitle = "Weed type  = summer_grass,  \nweed density = 12, weed kill = 200",
+       x= "inital water", y = "No3 top 60cm kg/ha",
+       colour = "Weed window")+
+  theme(
+    axis.text.x = element_text(angle = 90),
+            legend.position = "bottom",
+    plot.title = element_text(color="black", size=14, face="bold"))
+
+ggsave(
+       device = "png",
+       filename = "Katanning_controlled_No3_top_up.png",
+       path= "X:/Summer_weeds/APSIM_7/WA_sites/plots/",
+       width=8.62,
+       height = 6.28,
+       dpi=600
+)
+
+
+
 ```
   

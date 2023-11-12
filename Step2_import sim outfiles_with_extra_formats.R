@@ -15,9 +15,10 @@ library(lubridate)
 
 #site <- "Katanning_top_up"
 #site <-"Meckering_top_up"
-site <-"Merredin_top_up"
+#site <-"Merredin_top_up"
+site <- "Birchip/Birchip_top_up"
 
-df <- read.csv(paste0("X:/Summer_weeds/APSIM_7/WA_sites/output_csv/", site, "_all.csv"))
+df <- read.csv(paste0("X:/Summer_weeds/APSIM_7/VIC_sites/output_csv/", site, "_all.csv"))
 
 
 names(df)
@@ -95,7 +96,7 @@ str(df)
 
 ### select clms I want
 names(df)
-write.csv(df, paste0("X:/Summer_weeds/APSIM_7/WA_sites/output_csv/", site, "extra_Clm_step2.csv"), row.names = FALSE)
+write.csv(df, paste0("X:/Summer_weeds/APSIM_7/VIC_sites/output_csv/", site, "extra_Clm_step2.csv"), row.names = FALSE)
 
 
 unique(df$soil)

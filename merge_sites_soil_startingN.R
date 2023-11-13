@@ -33,7 +33,7 @@ df_8 <- read.csv(paste0(file_directory_plots, "MERRIWAGGAstarting_N_1998.csv"))
 df_9 <- read.csv(paste0(file_directory_plots, "MECKERINGstarting_N_1998.csv"))
 df_10 <- read.csv(paste0(file_directory_plots, "ROSEWORTHYstarting_N_1998.csv"))
 df_11 <- read.csv(paste0(file_directory_plots, "TEMORAstarting_N_1998.csv"))
-
+df_12 <- read.csv(paste0(file_directory_plots, "MINNIPAstarting_N_1998.csv"))
 
 
 all_site <- rbind(df_1,
@@ -46,7 +46,8 @@ all_site <- rbind(df_1,
                   df_8,
                   df_9,
                   df_10,
-                  df_11
+                  df_11,
+                  df_12
                   )
 names(all_site)
 

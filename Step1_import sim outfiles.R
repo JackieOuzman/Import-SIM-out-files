@@ -20,11 +20,11 @@ library(lubridate)
 #site <- "Birchip/Birchip_top_up"
 #site <- "Loxton_top_up"
 #site <- "Roseworthy_top_up"
+#site <- "Minnipa_top_up"
 
-site <- "Minnipa_top_up"
+site <-"Temora_top_up"
   
-  
-file_directory <- paste0("X:/Summer_weeds/APSIM_7/SA_sites/",site)
+file_directory <- paste0("X:/Summer_weeds/APSIM_7/NSW_sites/",site)
 
 file_directory
 
@@ -208,9 +208,9 @@ names(df)
 
 
 ## all files on list 1-14400
-write.csv(df_for_all_data, paste0("X:/Summer_weeds/APSIM_7/SA_sites/output_csv/", site, "_all.csv"), row.names = FALSE)
+write.csv(df_for_all_data, paste0("X:/Summer_weeds/APSIM_7/NSW_sites/output_csv/", site, "_all.csv"), row.names = FALSE)
 save(df_for_all_data, 
-     file = paste0("X:/Summer_weeds/APSIM_7/SA_sites/output_csv/", site, "_all",".RData")) 
+     file = paste0("X:/Summer_weeds/APSIM_7/NSW_sites/output_csv/", site, "_all",".RData")) 
 
 
 

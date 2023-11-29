@@ -22,8 +22,9 @@ library(lubridate)
 #site <- "Roseworthy_top_up"
 #site <- "Minnipa_top_up"
 #site <-"Temora_top_up"
+#site <-"Condobolin_top_up"
 
-site <-"Condobolin_top_up"
+site <-"Cootamundra_top_up"
   
 file_directory <- paste0("X:/Summer_weeds/APSIM_7/NSW_sites/",site)
 

@@ -22,8 +22,9 @@ library(lubridate)
 #site <- "Minnipa_top_up"
 #site <-"Temora_top_up"
 #site <-"Condobolin_top_up"
+#site <-"Cootamundra_top_up"
 
-site <-"Cootamundra_top_up"
+site <-"Merriwagga_top_up"
 
 df <- read.csv(paste0("X:/Summer_weeds/APSIM_7/NSW_sites/output_csv/", site, "_all.csv"))
 

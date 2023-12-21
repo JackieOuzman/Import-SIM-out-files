@@ -1,0 +1,322 @@
+---
+title: "Initial Water"
+author: "Jackie"
+date: "2023-10-22"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+## VIC sites
+
+
+
+```{r lib, message=FALSE, warning=FALSE, include=FALSE}
+
+#install.packages("tidyverse")
+library(tidyverse)
+#library(tidyr)
+library(dplyr)
+library(readr)
+library(stringr)
+library(lubridate)
+```
+
+
+
+
+```{r import data for Birchip, message=FALSE, warning=FALSE, include=FALSE}
+## import data
+site <- "Birchip_top_up"
+df <- read.csv(paste0("X:/Summer_weeds/APSIM_7/VIC_sites/output_csv/", site, "extra_Clm_step2.csv"))
+names(df)
+
+```
+
+
+
+ 
+
+
+#### Soil options  include:
+* Pale Sand
+* Loam	
+* ClayLoam	
+* Clay	
+* SandyDuplex
+
+#### Weed type options  include:
+* summer grass
+* winter dicot
+
+
+#### Weed density options  include:
+* 1,2,7,10,12,15,20,30,50
+
+
+#### Weed kill options  include:
+* 10,15,20,25,30,40,50,60,200
+
+#### Weed sow date options  include:
+* 01-Dec
+* 01-Jan
+* 01-Feb
+* 01-Mar
+
+Note that these are the start of the weed sowing window - there is no end date.
+
+#### Capturing if a weed emerged in the same month as the start of the weed sowing window
+Is by using the "weed_sow_and_emergedate_month" column.
+
+a) Converted the APSIM output Weed_emergedate, which is a day of the year into a date (coding 0 to NA)
+b) Extract the month from the DATE the Weed emerged.
+c) Extract the month from the Weed sow date, which is the start of the sowing window.
+
+If the month the weed emerged = the month of the start of the sowing window, then assign the month of the sowing window.
+
+
+```{r subset Birchip data, message=FALSE, warning=FALSE, include=FALSE}
+
+Birchip_all_soil_uncontrolled_weeds <- df %>%
+  filter(weed_type == "summer_grass") %>%
+  # filter(weed_sow_and_emergedate_month == "Feb") %>%
+  filter(
+    weed_sow_and_emergedate_month == "Dec" |
+      weed_sow_and_emergedate_month == "Jan" |
+      weed_sow_and_emergedate_month == "Feb" |
+      weed_sow_and_emergedate_month == "Mar" 
+  ) %>%
+  filter(weed_density == 10) %>%
+  filter(weed_kill == 200) 
+  
+
+unique(Birchip_all_soil_uncontrolled_weeds$soil)
+unique(Birchip_all_soil_uncontrolled_weeds$weed_type)
+unique(Birchip_all_soil_uncontrolled_weeds$weed_sow_date)
+unique(Birchip_all_soil_uncontrolled_weeds$weed_density)
+unique(Birchip_all_soil_uncontrolled_weeds$weed_kill)
+unique(Birchip_all_soil_uncontrolled_weeds$initial_water)
+
+```
+
+```{r subset Birchip data summary, message=FALSE, warning=FALSE, include=FALSE}
+
+Birchip_all_soil_uncontrolled_weeds_summary <-
+  Birchip_all_soil_uncontrolled_weeds %>%
+  group_by(soil, initial_water, weed_sow_and_emergedate_month) %>%
+  summarise(
+    Av_weed_biomass =  mean(Weed_biomass, na.rm = TRUE),
+    Av_weed_yield =    mean(Wheat_yield, na.rm = TRUE),
+    Av_NO3 =           mean(sownNO3_60, na.rm = TRUE)
+  )
+
+
+Birchip_all_soil_uncontrolled_weeds_summary <- ungroup(Birchip_all_soil_uncontrolled_weeds_summary)
+```
+# Plot
+
+```{r subset Birchip data plots 1, echo=FALSE, message=FALSE, warning=FALSE}
+
+Birchip_all_soil_uncontrolled_weeds_summary$soil <- factor(Birchip_all_soil_uncontrolled_weeds_summary$soil, levels = c("PaleSand", "Loam", "ClayLoam", "Clay", "Duplex"))
+
+
+### Biomass
+Birchip_all_soil_uncontrolled_weeds_summary %>% 
+ggplot( aes(x=as.factor(initial_water), y = Av_weed_biomass, colour = as.factor(weed_sow_and_emergedate_month)))+
+  geom_point()+
+  facet_wrap(.~soil)+
+  theme_bw()+
+  labs(title = "Birchip uncontrolled weeds",
+       subtitle = "Weed type  = summer_grass,  \nweed density = 12, weed kill = 200",
+       x= "inital water", y = "weed biomass kg/ha",
+       colour = "Weed window")+
+  theme(
+    axis.text.x = element_text(angle = 90),
+            legend.position = "bottom",
+    plot.title = element_text(color="black", size=14, face="bold"))
+
+ggsave(
+       device = "png",
+       filename = "Birchip_uncontrolled_biomass_top_up.png",
+       path= "X:/Summer_weeds/APSIM_7/VIC_sites/plots/",
+       width=8.62,
+       height = 6.28,
+       dpi=600
+)
+
+
+### Yield
+Birchip_all_soil_uncontrolled_weeds_summary %>% 
+ggplot( aes(x=as.factor(initial_water), y = Av_weed_yield, colour = as.factor(weed_sow_and_emergedate_month)))+
+  geom_point()+
+  facet_wrap(.~soil)+
+  theme_bw()+
+  labs(title = "Birchip uncontrolled weeds",
+       subtitle = "Weed type  = summer_grass,  \nweed density = 12, weed kill = 200",
+       x= "inital water", y = "wheat yield kg/ha",
+       colour = "Weed window")+
+  theme(
+    axis.text.x = element_text(angle = 90),
+            legend.position = "bottom",
+    plot.title = element_text(color="black", size=14, face="bold"))
+
+ggsave(
+       device = "png",
+       filename = "Birchip_uncontrolled_yld_top_up.png",
+       path= "X:/Summer_weeds/APSIM_7/VIC_sites/plots/",
+       width=8.62,
+       height = 6.28,
+       dpi=600
+)
+
+
+### SownNO3  
+Birchip_all_soil_uncontrolled_weeds_summary %>% 
+ggplot( aes(x=as.factor(initial_water), y = Av_NO3, colour = as.factor(weed_sow_and_emergedate_month)))+
+  geom_point()+
+  facet_wrap(.~soil)+
+  theme_bw()+
+  labs(title = "Birchip uncontrolled weeds",
+       subtitle = "Weed type  = summer_grass,  \nweed density = 12, weed kill = 200",
+       x= "inital water", y = "No3 top 60cm kg/ha",
+       colour = "Weed window")+
+  theme(
+    axis.text.x = element_text(angle = 90),
+            legend.position = "bottom",
+    plot.title = element_text(color="black", size=14, face="bold"))
+
+ggsave(
+       device = "png",
+       filename = "Birchip_uncontrolled_No3_top_up.png",
+       path= "X:/Summer_weeds/APSIM_7/VIC_sites/plots/",
+       width=8.62,
+       height = 6.28,
+       dpi=600
+)
+
+
+
+```
+
+```{r subset Birchip data subset controlled2, echo=FALSE, message=FALSE, warning=FALSE}
+
+
+Birchip_all_soil_controlled_weeds <- df %>%
+  filter(weed_type == "summer_grass") %>%
+  # filter(weed_sow_and_emergedate_month == "Feb") %>%
+  filter(
+    weed_sow_and_emergedate_month == "Dec" |
+      weed_sow_and_emergedate_month == "Jan" |
+      weed_sow_and_emergedate_month == "Feb" |
+      weed_sow_and_emergedate_month == "Mar" 
+  ) %>%
+  filter(weed_density == 10) %>%
+  filter(weed_kill == 10) 
+
+
+  
+```
+
+
+
+```{r subset Birchip data summary2, message=FALSE, warning=FALSE, include=FALSE}
+
+Birchip_all_soil_controlled_weeds_summary <-
+  Birchip_all_soil_controlled_weeds %>%
+  group_by(soil, initial_water, weed_sow_and_emergedate_month) %>%
+  summarise(
+    Av_weed_biomass =  mean(Weed_biomass, na.rm = TRUE),
+    Av_weed_yield =    mean(Wheat_yield, na.rm = TRUE),
+    Av_NO3 =           mean(sownNO3_60, na.rm = TRUE)
+  )
+
+
+Birchip_all_soil_controlled_weeds_summary <- ungroup(Birchip_all_soil_controlled_weeds_summary)
+```
+
+
+```{r subset Birchip data plots 2d, echo=FALSE, message=FALSE, warning=FALSE}
+
+Birchip_all_soil_controlled_weeds_summary$soil <- factor(Birchip_all_soil_controlled_weeds_summary$soil, levels = c("PaleSand", "Loam", "ClayLoam", "Clay", "Duplex"))
+
+
+### Biomass
+Birchip_all_soil_controlled_weeds_summary %>% 
+ggplot( aes(x=as.factor(initial_water), y = Av_weed_biomass, colour = as.factor(weed_sow_and_emergedate_month)))+
+  geom_point()+
+  facet_wrap(.~soil)+
+  theme_bw()+
+  labs(title = "Birchip controlled weeds",
+       subtitle = "Weed type  = summer_grass,  \nweed density = 12, weed kill = 200",
+       x= "inital water", y = "weed biomass kg/ha",
+       colour = "Weed window")+
+  theme(
+    axis.text.x = element_text(angle = 90),
+            legend.position = "bottom",
+    plot.title = element_text(color="black", size=14, face="bold"))
+
+ggsave(
+       device = "png",
+       filename = "Birchip_controlled_biomass_top_up.png",
+       path= "X:/Summer_weeds/APSIM_7/VIC_sites/plots/",
+       width=8.62,
+       height = 6.28,
+       dpi=600
+)
+
+
+### Yield
+Birchip_all_soil_controlled_weeds_summary %>% 
+ggplot( aes(x=as.factor(initial_water), y = Av_weed_yield, colour = as.factor(weed_sow_and_emergedate_month)))+
+  geom_point()+
+  facet_wrap(.~soil)+
+  theme_bw()+
+  labs(title = "Birchip controlled weeds",
+       subtitle = "Weed type  = summer_grass,  \nweed density = 12, weed kill = 200",
+       x= "inital water", y = "wheat yield kg/ha",
+       colour = "Weed window")+
+  theme(
+    axis.text.x = element_text(angle = 90),
+            legend.position = "bottom",
+    plot.title = element_text(color="black", size=14, face="bold"))
+
+ggsave(
+       device = "png",
+       filename = "Birchip_controlled_yld_top_up.png",
+       path= "X:/Summer_weeds/APSIM_7/VIC_sites/plots/",
+       width=8.62,
+       height = 6.28,
+       dpi=600
+)
+
+
+### SownNO3  
+Birchip_all_soil_controlled_weeds_summary %>% 
+ggplot( aes(x=as.factor(initial_water), y = Av_NO3, colour = as.factor(weed_sow_and_emergedate_month)))+
+  geom_point()+
+  facet_wrap(.~soil)+
+  theme_bw()+
+  labs(title = "Birchip controlled weeds",
+       subtitle = "Weed type  = summer_grass,  \nweed density = 12, weed kill = 200",
+       x= "inital water", y = "No3 top 60cm kg/ha",
+       colour = "Weed window")+
+  theme(
+    axis.text.x = element_text(angle = 90),
+            legend.position = "bottom",
+    plot.title = element_text(color="black", size=14, face="bold"))
+
+ggsave(
+       device = "png",
+       filename = "Birchip_controlled_No3_top_up.png",
+       path= "X:/Summer_weeds/APSIM_7/VIC_sites/plots/",
+       width=8.62,
+       height = 6.28,
+       dpi=600
+)
+
+
+
+```
+  

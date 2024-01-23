@@ -37,6 +37,7 @@ names(df)
 
 
 
+
  
 
 
@@ -101,6 +102,10 @@ unique(Minnipa_all_soil_uncontrolled_weeds$initial_water)
 
 ```
 
+
+
+
+
 ```{r subset Minnipa data summary, message=FALSE, warning=FALSE, include=FALSE}
 
 Minnipa_all_soil_uncontrolled_weeds_summary <-
@@ -115,90 +120,7 @@ Minnipa_all_soil_uncontrolled_weeds_summary <-
 
 Minnipa_all_soil_uncontrolled_weeds_summary <- ungroup(Minnipa_all_soil_uncontrolled_weeds_summary)
 ```
-# Plot
 
-```{r subset Minnipa data plots 1, echo=FALSE, message=FALSE, warning=FALSE}
-
-Minnipa_all_soil_uncontrolled_weeds_summary$soil <- factor(Minnipa_all_soil_uncontrolled_weeds_summary$soil, levels = c("PaleSand", "Loam", "ClayLoam", "Clay", "Duplex"))
-
-
-### Biomass
-Minnipa_all_soil_uncontrolled_weeds_summary %>% 
-ggplot( aes(x=as.factor(initial_water), y = Av_weed_biomass, colour = as.factor(weed_sow_and_emergedate_month)))+
-  geom_point()+
-  facet_wrap(.~soil)+
-  theme_bw()+
-  labs(title = "Minnipa uncontrolled weeds",
-       subtitle = "Weed type  = summer_grass,  \nweed density = 12, weed kill = 200",
-       x= "inital water", y = "weed biomass kg/ha",
-       colour = "Weed window")+
-  theme(
-    axis.text.x = element_text(angle = 90),
-            legend.position = "bottom",
-    plot.title = element_text(color="black", size=14, face="bold"))
-
-ggsave(
-       device = "png",
-       filename = "Minnipa_uncontrolled_biomass_top_up.png",
-       path= "X:/Summer_weeds/APSIM_7/SA_sites/plots/",
-       width=8.62,
-       height = 6.28,
-       dpi=600
-)
-
-
-### Yield
-Minnipa_all_soil_uncontrolled_weeds_summary %>% 
-ggplot( aes(x=as.factor(initial_water), y = Av_weed_yield, colour = as.factor(weed_sow_and_emergedate_month)))+
-  geom_point()+
-  facet_wrap(.~soil)+
-  theme_bw()+
-  labs(title = "Minnipa uncontrolled weeds",
-       subtitle = "Weed type  = summer_grass,  \nweed density = 12, weed kill = 200",
-       x= "inital water", y = "wheat yield kg/ha",
-       colour = "Weed window")+
-  theme(
-    axis.text.x = element_text(angle = 90),
-            legend.position = "bottom",
-    plot.title = element_text(color="black", size=14, face="bold"))
-
-ggsave(
-       device = "png",
-       filename = "Minnipa_uncontrolled_yld_top_up.png",
-       path= "X:/Summer_weeds/APSIM_7/SA_sites/plots/",
-       width=8.62,
-       height = 6.28,
-       dpi=600
-)
-
-
-### SownNO3  
-Minnipa_all_soil_uncontrolled_weeds_summary %>% 
-ggplot( aes(x=as.factor(initial_water), y = Av_NO3, colour = as.factor(weed_sow_and_emergedate_month)))+
-  geom_point()+
-  facet_wrap(.~soil)+
-  theme_bw()+
-  labs(title = "Minnipa uncontrolled weeds",
-       subtitle = "Weed type  = summer_grass,  \nweed density = 12, weed kill = 200",
-       x= "inital water", y = "No3 top 60cm kg/ha",
-       colour = "Weed window")+
-  theme(
-    axis.text.x = element_text(angle = 90),
-            legend.position = "bottom",
-    plot.title = element_text(color="black", size=14, face="bold"))
-
-ggsave(
-       device = "png",
-       filename = "Minnipa_uncontrolled_No3_top_up.png",
-       path= "X:/Summer_weeds/APSIM_7/SA_sites/plots/",
-       width=8.62,
-       height = 6.28,
-       dpi=600
-)
-
-
-
-```
 
 ```{r subset Minnipa data subset controlled2, echo=FALSE, message=FALSE, warning=FALSE}
 
@@ -237,6 +159,93 @@ Minnipa_all_soil_controlled_weeds_summary <- ungroup(Minnipa_all_soil_controlled
 ```
 
 
+
+
+# Plot 
+
+```{r subset Minnipa data plots 1, echo=FALSE, message=FALSE, warning=FALSE}
+
+Minnipa_all_soil_uncontrolled_weeds_summary$soil <- factor(Minnipa_all_soil_uncontrolled_weeds_summary$soil, levels = c("PaleSand", "Loam", "ClayLoam", "Clay", "Duplex"))
+
+
+### Biomass
+Minnipa_all_soil_uncontrolled_weeds_summary %>% 
+ggplot( aes(x=as.factor(initial_water), y = Av_weed_biomass, colour = as.factor(weed_sow_and_emergedate_month)))+
+  geom_point()+
+  facet_wrap(.~soil)+
+  theme_bw()+
+  labs(title = "Minnipa uncontrolled weeds",
+       #subtitle = "Weed type  = summer_grass,  \nweed density = 12, weed kill = 200",
+       x= "inital water", y = "weed biomass kg/ha",
+       colour = "Weed window")+
+  theme(
+    axis.text.x = element_text(angle = 90),
+            legend.position = "bottom",
+    plot.title = element_text(color="black", size=14, face="bold"))
+
+ggsave(
+       device = "png",
+       filename = "Minnipa_uncontrolled_biomass_top_up.png",
+       path= "X:/Summer_weeds/APSIM_7/SA_sites/plots/",
+       width=8.62,
+       height = 6.28,
+       dpi=600
+)
+
+
+### Yield
+Minnipa_all_soil_uncontrolled_weeds_summary %>% 
+ggplot( aes(x=as.factor(initial_water), y = Av_weed_yield, colour = as.factor(weed_sow_and_emergedate_month)))+
+  geom_point()+
+  facet_wrap(.~soil)+
+  theme_bw()+
+  labs(title = "Minnipa uncontrolled weeds",
+       #subtitle = "Weed type  = summer_grass,  \nweed density = 12, weed kill = 200",
+       x= "inital water", y = "wheat yield kg/ha",
+       colour = "Weed window")+
+  theme(
+    axis.text.x = element_text(angle = 90),
+            legend.position = "bottom",
+    plot.title = element_text(color="black", size=14, face="bold"))
+
+ggsave(
+       device = "png",
+       filename = "Minnipa_uncontrolled_yld_top_up.png",
+       path= "X:/Summer_weeds/APSIM_7/SA_sites/plots/",
+       width=8.62,
+       height = 6.28,
+       dpi=600
+)
+
+
+### SownNO3  
+Minnipa_all_soil_uncontrolled_weeds_summary %>% 
+ggplot( aes(x=as.factor(initial_water), y = Av_NO3, colour = as.factor(weed_sow_and_emergedate_month)))+
+  geom_point()+
+  facet_wrap(.~soil)+
+  theme_bw()+
+  labs(title = "Minnipa uncontrolled weeds",
+       #subtitle = "Weed type  = summer_grass,  \nweed density = 12, weed kill = 200",
+       x= "inital water", y = "No3 top 60cm kg/ha",
+       colour = "Weed window")+
+  theme(
+    axis.text.x = element_text(angle = 90),
+            legend.position = "bottom",
+    plot.title = element_text(color="black", size=14, face="bold"))
+
+ggsave(
+       device = "png",
+       filename = "Minnipa_uncontrolled_No3_top_up.png",
+       path= "X:/Summer_weeds/APSIM_7/SA_sites/plots/",
+       width=8.62,
+       height = 6.28,
+       dpi=600
+)
+
+
+
+```
+
 ```{r subset Minnipa data plots 2d, echo=FALSE, message=FALSE, warning=FALSE}
 
 Minnipa_all_soil_controlled_weeds_summary$soil <- factor(Minnipa_all_soil_controlled_weeds_summary$soil, levels = c("PaleSand", "Loam", "ClayLoam", "Clay", "Duplex"))
@@ -249,7 +258,7 @@ ggplot( aes(x=as.factor(initial_water), y = Av_weed_biomass, colour = as.factor(
   facet_wrap(.~soil)+
   theme_bw()+
   labs(title = "Minnipa controlled weeds",
-       subtitle = "Weed type  = summer_grass,  \nweed density = 12, weed kill = 200",
+       #subtitle = "Weed type  = summer_grass,  \nweed density = 12, weed kill = 200",
        x= "inital water", y = "weed biomass kg/ha",
        colour = "Weed window")+
   theme(
@@ -274,7 +283,7 @@ ggplot( aes(x=as.factor(initial_water), y = Av_weed_yield, colour = as.factor(we
   facet_wrap(.~soil)+
   theme_bw()+
   labs(title = "Minnipa controlled weeds",
-       subtitle = "Weed type  = summer_grass,  \nweed density = 12, weed kill = 200",
+       #subtitle = "Weed type  = summer_grass,  \nweed density = 12, weed kill = 200",
        x= "inital water", y = "wheat yield kg/ha",
        colour = "Weed window")+
   theme(
@@ -299,7 +308,7 @@ ggplot( aes(x=as.factor(initial_water), y = Av_NO3, colour = as.factor(weed_sow_
   facet_wrap(.~soil)+
   theme_bw()+
   labs(title = "Minnipa controlled weeds",
-       subtitle = "Weed type  = summer_grass,  \nweed density = 12, weed kill = 200",
+       #subtitle = "Weed type  = summer_grass,  \nweed density = 12, weed kill = 200",
        x= "inital water", y = "No3 top 60cm kg/ha",
        colour = "Weed window")+
   theme(
@@ -319,4 +328,49 @@ ggsave(
 
 
 ```
-  
+
+
+
+
+```{r min and max values, message=FALSE, warning=FALSE, include=FALSE}
+#max and min vaues for 2 df
+
+
+Minnipa_all_soil_uncontrolled_weeds_summary <- Minnipa_all_soil_uncontrolled_weeds_summary %>% mutate(grouping = "uncontrolled_weeds")
+
+Minnipa_all_soil_controlled_weeds_summary <- Minnipa_all_soil_controlled_weeds_summary %>% mutate(grouping = "controlled_weeds")
+
+Minnipa_all_soil_uncontrolled_and_controlled_weeds_summary <- rbind(Minnipa_all_soil_uncontrolled_weeds_summary,
+                                                                    Minnipa_all_soil_controlled_weeds_summary)
+
+Minnipa_all_soil_uncontrolled_and_controlled_weeds_summary <- ungroup(Minnipa_all_soil_uncontrolled_and_controlled_weeds_summary)
+
+
+summary_stats <- Minnipa_all_soil_uncontrolled_and_controlled_weeds_summary %>% 
+  group_by(grouping) %>% 
+  summarise(min_NO3 = min(Av_NO3),
+            max_NO3 = max( Av_NO3),
+            
+            min_weed_biomass = min(Av_weed_biomass),
+            max_weed_biomass = max( Av_weed_biomass),
+            
+            min_weed_yld = min(Av_weed_yield),
+            max_weed_yld = max( Av_weed_yield)
+            
+            )
+summary_stats
+
+min_No3 = summary_stats[1,1]
+max_No3 = summary_stats[1,2]
+
+min_weed_biomass = summary_stats[1,3]
+max_weed_biomass = summary_stats[1,4]
+
+min_weed_yld = summary_stats[1,5]
+max_weed_yld = summary_stats[1,6]
+
+
+write.csv(summary_stats, 
+       "X:/Summer_weeds/APSIM_7/SA_sites/plots/Minnipa_summary_stats_plotted_av.csv")
+       
+```

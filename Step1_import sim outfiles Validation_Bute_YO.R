@@ -11,13 +11,11 @@ library(lubridate)
 
 #################################################################################
 
-site <-"/ButeDune"
+site <-"/Sim_T4"
   
-file_directory <- paste0("X:/Summer_weeds/Validation_data/Yvettee_sites",site)
+file_directory <- paste0("X:/Summer_weeds/Validation_data/Boorowa_APSIM_7",site)
 
 file_directory
-
-
 
 ################################################################################
 list_sim_out_file <-
@@ -28,7 +26,7 @@ list_sim_out_file <-
     full.names = FALSE
   )
 
-list_sim_out_file #12
+list_sim_out_file #160
 #list_sim_out_file <- list_sim_out_file[c(1:3)]
 
 
@@ -36,95 +34,101 @@ list_sim_out_file #12
 #str(all_data)
 df_for_all_data <- data.frame(
   
-  Date = character(),
   Year =  character(),
-  Day_of_year = character(),
-  Rain = double(),
+  Date = character(),
   Weed_emergedate = character(),
-  Plant_weed_cover = character(),
-  Plant_wheat_cover = character(),
-  Plant_canola_cover = character(),
-  Cover_surface_run_off = character(),
-  Plant_weed_cover_ep = character(),
-  Plant_wheat_cover_ep= character(),
-  Plant_canola_cover_ep = character(),
-  ES = character(),
-  WeedBiomass = double(),
-  WheatBiomass = double(),
-  CanolaBiomass=double(),
-  WeedBiomass_n = double(),
-  WheatBiomass_n = double(),
-  CanolaBiomass_n =double(),
-  Weed_yield = double(),
-  Wheat_yield = double(),
-  Canola_yield = double(),
-  NO3_1 = double(),
-  NO3_2 = double(),
-  NO3_3 = double(),
-  NO3_4 = double(),
-  NO3_5 = double(),
-  NH4_1=double(),
-  NH4_2=double(),
-  NH4_3=double(),
-  NH4_4=double(),
-  NH4_5=double(),
-  SW_1=double(),
-  SW_2=double(),
-  SW_3=double(),
-  SW_4=double(),
-  SW_5=double(),
+  Weed_biomass = character(),
+  Rain = double(),
+  Soil_water_SOWSW = character(),
+  Soil_No3_1 = double(),
+  Soil_No3_2 = double(),
+  Soil_No3_3 = double(),
+  Soil_No3_4 = double(),
+  Soil_No3_5 = double(),
+  Soil_No3_6 = double(),
+  Soil_No3_7 = double(),
+  Soil_No3_8 = double(),
+  Soil_No3_9 = double(),
+  Soil_No3_10 = double(),
+  Soil_No3_11 = double(), 
+  Soil_nh4_1 = double(),
+  Soil_nh4_2 = double(),
+  Soil_nh4_3 = double(),
+  Soil_nh4_4 = double(),
+  Soil_nh4_5 = double(),
+  Soil_nh4_6 = double(),
+  Soil_nh4_7 = double(),
+  Soil_nh4_8 = double(),
+  Soil_nh4_9 = double(),
+  Soil_nh4_10 = double(),
+  Soil_nh4_11 = double(),
+  Soil_sw_1 = double(),
+  Soil_sw_2 = double(),
+  Soil_sw_3 =double(),
+  Soil_sw_4 = double(),
+  Soil_sw_5 = double(),
+  Soil_sw_6 = double(),
+  Soil_sw_7 = double(),
+  Soil_sw_8 = double(),
+  Soil_sw_9 = double(),
+  Soil_sw_10 = double(),
+  Soil_sw_11 = double(),
+  
   APSIM_Version     = as.character(),
-  Simulation           = as.character()#,
-  # title             = as.character(),
-  # days_since_last_cohort  = as.character(),
-  # weed_type         = as.character(),
-  # weed_sow_date     = as.character(),
-  # weed_density      = as.character(),
-  # weed_type         = as.character()
+  factors           = as.character(),
+  title             = as.character(),
+  days_since_last_cohort  = as.character(),
+  weed_type         = as.character(),
+  weed_sow_date     = as.character(),
+  weed_density      = as.character(),
+  weed_type         = as.character()
+  
   
   )
 
 ### set the heading names for the data you want to import
 ### heading names for file 2,3,5
 heading <- c(
-  "Date",
   "Year",
-  "Day_of_year",
-  "Rain",
+  "Date",
   "Weed_emergedate",
-  "Plant_weed_cover",
-  "Plant_wheat_cover",
-  "Plant_canola_cover",
-  "Cover_surface_run_off",
-  "Plant_weed_cover_ep",
-  "Plant_wheat_cover_ep",
-  "Plant_canola_cover_ep",
-  "ES",
-  "WeedBiomass",
-  "WheatBiomass",
-  "CanolaBiomass",
-  "WeedBiomass_n",
-  "WheatBiomass_n",
-  "CanolaBiomass_n",
-  "Weed_yield",
-  "Wheat_yield",
-  "Canola_yield",
-  "NO3_1",
-  "NO3_2",
-  "NO3_3",
-  "NO3_4",
-  "NO3_5",
-  "NH4_1",
-  "NH4_2",
-  "NH4_3",
-  "NH4_4",
-  "NH4_5",
-  "SW_1",
-  "SW_2",
-  "SW_3",
-  "SW_4",
-  "SW_5"
- 
+  "Weed_biomass",
+  "Rain",
+  "Soil_water_SOWSW",
+  "Soil_No3_1",
+  "Soil_No3_2",
+  "Soil_No3_3",
+  "Soil_No3_4",
+  "Soil_No3_5",
+  "Soil_No3_6",
+  'Soil_No3_7',
+  'Soil_No3_8',
+  'Soil_No3_9',
+  'Soil_No3_10',
+  'Soil_No3_11',
+  'Soil_nh4_1',
+  'Soil_nh4_2',
+  'Soil_nh4_3',
+  'Soil_nh4_4',
+  'Soil_nh4_5',
+  'Soil_nh4_6',
+  'Soil_nh4_7',
+  'Soil_nh4_8',
+  'Soil_nh4_9',
+  'Soil_nh4_10',
+  'Soil_nh4_11',
+  'Soil_sw_1',
+  'Soil_sw_2',
+  'Soil_sw_3',
+  'Soil_sw_4',
+  'Soil_sw_5',
+  'Soil_sw_6',
+  'Soil_sw_7',
+  'Soil_sw_8',
+  'Soil_sw_9',
+  'Soil_sw_10',
+  'Soil_sw_11'
+  
   
   # "APSIM_Version",
   # "factors",
@@ -141,8 +145,8 @@ heading <- c(
   
 list_sim_out_file
 ## worked example
-#list_sim_out_file <- "ButeDune_dicot_delay 2plants Data.out"
-                     #"X:/Summer_weeds/Validation_data/Yvettee_sites/ButeDune/ButeDune_dicot_delay 2plants Data.out"
+#list_sim_out_file <- "T1_validation;class=summer_grass;date1=01-Dec;daysLastCohort=20;density=1 pdk output.out"
+
 ################################################################################
 ###############################################################################
 ##########               As a loop                                    ##########
@@ -180,34 +184,34 @@ APSIM_version<-gsub("ApsimVersion = ","",as.character(APSIM_version))
 factor = factors[1,1]
 factor<-gsub("factors = ","",as.character(factor))
 
-# title = title_a[1,1]
-# title<-gsub("Title = ","",as.character(title))
+title = title_a[1,1]
+title<-gsub("Title = ","",as.character(title))
 
 
 
 
 ### split the factors based on ;
-factor_split <- str_split_fixed(factors$V1, '=', 4)#change back to 6 for other sites not katanning
-factor_split <- factor_split[,2]
+factor_split <- str_split_fixed(factors$V1, ';', 4)#change back to 6 for other sites not katanning
+
 ###weed_type
-# weed_type <- factor_split[1]
-# weed_type<-gsub("factors = class=","",
-#                 as.character(weed_type))
+weed_type <- factor_split[1]
+weed_type<-gsub("factors = class=","",
+                as.character(weed_type))
 
 ###weed_date
-# weed_date <- factor_split[2]
-# weed_date<-gsub("date1=","",
-#                 as.character(weed_date))
+weed_date <- factor_split[2]
+weed_date<-gsub("date1=","",
+                as.character(weed_date))
 
 ###days since last cohort
-# days_since_last_cohort <- factor_split[3]
-# days_since_last_cohort<-gsub("density=","",
-#                    as.character(days_since_last_cohort))
+days_since_last_cohort <- factor_split[3]
+days_since_last_cohort<-gsub("density=","",
+                   as.character(days_since_last_cohort))
 
 ###weed_density
-# weed_density <- factor_split[4]
-# weed_density<-gsub("density=","",
-#                    as.character(weed_density))
+weed_density <- factor_split[4]
+weed_density<-gsub("density=","",
+                   as.character(weed_density))
 
 
 
@@ -216,12 +220,12 @@ factor_split <- factor_split[,2]
 ### get sim settings into the df
 df <- df %>% 
   mutate( APSIM_Version = APSIM_version,
-     Simulation = factor_split#,
-     # title = title,
-     # weed_type = weed_type ,
-     # weed_sow_date = weed_date,
-     # weed_density = weed_density,
-     # days_since_last_cohort
+     factors = factor,
+     title = title,
+     weed_type = weed_type ,
+     weed_sow_date = weed_date,
+     weed_density = weed_density,
+     days_since_last_cohort
      
          )
 names(df)

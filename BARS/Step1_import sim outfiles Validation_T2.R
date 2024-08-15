@@ -11,7 +11,7 @@ library(lubridate)
 
 #################################################################################
 
-site <-"/Sim_T3"
+site <-"/Sim_T2"
   
 file_directory <- paste0("X:/Summer_weeds/Validation_data/Boorowa_APSIM_7",site)
 

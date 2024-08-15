@@ -11,9 +11,9 @@ library(lubridate)
 
 #################################################################################
 
-site <-"/Sim_T3"
-  
-file_directory <- paste0("X:/Summer_weeds/Validation_data/Boorowa_APSIM_7",site)
+site <-"/Sim_T2"
+                          #"X:\Summer_weeds\Validation_data\Birchip_APSIM_7\Sim_T1"
+file_directory <- paste0("X:/Summer_weeds/Validation_data/Birchip_APSIM_7",site)
 
 file_directory
 
@@ -254,7 +254,7 @@ names(df)
 
 ## all files on list 1-14400
 write.csv(df_for_all_data, paste0(
-  "X:/Summer_weeds/Validation_data/Boorowa_APSIM_7/Outputs/", 
+  "X:/Summer_weeds/Validation_data/Birchip_APSIM_7/Outputs/", 
   site, 
   "_all.csv"), row.names = FALSE)
 
